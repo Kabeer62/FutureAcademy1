@@ -8,10 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-3</title>
+    <title>Commit-4</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
-
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="commit4.css">
 </head>
 
 <body>
@@ -74,6 +73,7 @@
                     <p>Whether you're starting your career or looking to expand your skill set, Future Academy is here
                         to support your educational journey. Join us and unlock your potential with a learning
                         experience that’s designed just for you.</p>
+
                 </div>
             </div>
         </header>
@@ -93,17 +93,12 @@
                         <a class="courses" href="#" @click="showCourses">Visit Courses</a>
                     </div>
                 </section>
-
                 <!-- Loop through products -->
+
                 <h1 id="title" v-text="sitename"></h1>
                 <section id="products-section">
                     <div v-for="product in products" :key="product.id" class="product-item">
-                        <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
-                            <div class="modal-content" @click.stop>
-                                <span class="close-btn" @click="closeImageModal">&times;</span>
-                                <img :src="currentImage" alt="Product image" class="modal-image">
-                            </div>
-                        </div>
+                        
 
                         <figure @click="openImageModal(product.image)">
                             <img :src="product.image" alt="Product image">
@@ -116,11 +111,15 @@
                             <p v-else class="out-of-stock">Out of stock</p>
                             <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
                             <p class="price">${{ product.price }}</p>
-                            <button class="add-button"><i class="fas fa-cart-plus"></i></button>
+                            <button @click="addToCart(product)" v-if="product.availableInventory > 0"
+                                class="add-button">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                            <button disabled v-else class="add-button">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button>
                         </section>
                     </div>
-                    <!-- <p v-if="sortedFilteredProducts.length === 0" class="no-match-message">No match found for your
-                        search.</p> -->
                 </section>
 
                 <!-- Register Form -->
@@ -214,11 +213,12 @@
             el: "#app",
             data: {
                 sitename: "Our Top Rated Courses",
+                showRegisterForm: true,
                 showContact: false,
                 showAbout: false,
                 showProduct: true,
-                showCartButton: true,
                 showHomeContent: true,
+                showCoursesOnly: false,
                 showNavBar: true,
                 school: {
                     name: 'Future Academy',
@@ -344,23 +344,15 @@
             methods: {
                 showHome: function () {
                     this.showHomeContent = true;
+                    this.showCoursesContent = false;
                     this.showCoursesOnly = false;
                     this.showProduct = true;
-                },
-
-                showFormSection: function () {
-                    if (this.cart.length > 0) {
-                        this.showForm = true;
-                    } else {
-                        alert("Please add at least one course to the cart before proceeding to checkout.");
-                    }
                 },
 
                 showCourses: function () {
                     this.showHomeContent = false;
                     this.showCoursesContent = true;
                     this.showCoursesOnly = true;
-                    this.showCart = false;
                     this.showRegisterForm = false;
                 },
 
@@ -379,6 +371,7 @@
                             // Add a new product with initial quantity 1
                             this.cart.push({ ...product, orderedQuantity: 1 });
                         }
+                        this.showCartButton = true;
                     }
                 },
 
