@@ -4,3 +4,4 @@ Webstore for after school classes VUE
 https://kabeer62.github.io/FutureAcademy1/
 ## Commit 1 - CSS
 ## Commit 2 - Navigation
+## Commit 3 - Subjects

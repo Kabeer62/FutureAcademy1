@@ -8,14 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-1</title>
+    <title>Commit-2</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
     <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
-
     <div id="app">
         <!-- NavBar -->
         <header>
@@ -35,8 +33,7 @@
                         </li>
                         <li><a @mouseover="showContact = true" @mouseleave="showContact = false"
                                 class="nav-item">Contact</a></li>
-                        <button id="checkout_button"><i class="fa-solid fa-cart-shopping"></i>
-                        </button>
+                        <button id="checkout_button"><i class="fa-solid fa-cart-shopping"></i></button>
                     </ul>
                 </div>
             </nav>
@@ -64,7 +61,7 @@
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
                 <div class="about-profile">
-                    <img src="images/profile1.jpg" alt="">
+                    <img src="./images/profile1.jpg" alt="">
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
                         equips students with practical skills and knowledge for their future careers.</p>
@@ -78,6 +75,130 @@
                 </div>
             </div>
         </header>
+
+        <main>
+            <section id="main-section">
+                <!-- Home -->
+                <section id="home">
+                    <h2>Unlock innovation with the power of technology education</h2>
+                    <p>Technology is not just a tool, it’s a gateway to innovation,
+                        creativity, and a better future. By investing in tech education,
+                        we invest in a future where everyone has the potential to contribute to meaningful change and
+                        drive
+                        progress.</p>
+                    <div class="btn">
+                        <a class="learn" href="#">Learn More</a>
+                        <a class="courses" href="#">Visit Courses</a>
+                    </div>
+                </section>
+                <!-- Loop through products -->
+
+                <h1 id="title" v-text="sitename"></h1>
+                <section id="products-section">
+                    <div v-for="product in products" :key="product.id" class="product-item">
+
+                        <figure @click="openImageModal(product.image)">
+                            <img :src="product.image" alt="Product image">
+                        </figure>
+                        <section id="modules">
+                            <h2 class="product-item">{{ product.title }}</h2>
+                            <p class="product-item product-location">{{ product.location }}</p>
+                            <p>{{ product.description }}</p>
+                            <p v-if="product.availableInventory > 0">In stock: {{ product.availableInventory }}</p>
+                            <p v-else class="out-of-stock">Out of stock</p>
+                            <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
+                            <p class="price">${{ product.price }}</p>
+                            <button @click="addToCart(product)" v-if="product.availableInventory > 0"
+                                class="add-button">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                            <button disabled v-else class="add-button">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button>
+                        </section>
+                    </div>
+                    
+                </section>
+
+                <!-- Register Form -->
+                <section id="register" v-if="showRegisterForm">
+                    <div class="reminder">
+                        <h1>Register To Get It</h1>
+                    </div>
+                    <div class="form">
+                        <h3>Create Free Account Now</h3>
+                        <input type="text" placeholder="Name" name="" id="">
+                        <input type="text" placeholder="Email" name="" id="">
+                        <input type="text" placeholder="Phone Number" name="" id="">
+                        <div class="btn">
+                            <a class="learn" href="#" @click.prevent="submitForm">Submit Form</a>
+                        </div>
+                    </div>
+                </section>
+                <!-- Register Form End-->
+                <!-- Profile Form -->
+                <section id="creater">
+                    <h1>Creater</h1>
+                    <p>I’m a 3rd-year IT student at Middlesex University,
+                        and this website is part of a project for my course</p>
+                    <div class="creater-box">
+                        <div class="profile">
+                            <img src="images/profile1.jpg" alt="">
+                            <h6>Kabeer Kumar</h6>
+                            <p>HTML Websites Creater</p>
+                            <div class="pro-links">
+                                <i class="fab fa-facebook-f"></i>
+                                <i class="fab fa-instagram"></i>
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+        <!-- Footer visible when not showing only courses -->
+        <footer>
+            <div class="footer-col">
+                <h3>Top Products</h3>
+                <li>Virtual Labs</li>
+                <li>Mentorship Programs</li>
+                <li>Online Libraries</li>
+                <li>Cloud Services (AWS, Azure, Google Cloud)</li>
+            </div>
+
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <li>Course Catalog</li>
+                <li>Admissions</li>
+                <li>Student Portal</li>
+                <li>Events & Workshops</li>
+            </div>
+
+            <div class="footer-col">
+                <h3>Features</h3>
+                <li>Industry-Driven Curriculum</li>
+                <li>Experienced Faculty</li>
+                <li>Job Placement Assistance</li>
+                <li>Flexible Learning</li>
+            </div>
+
+            <div class="footer-col">
+                <h3>Guides</h3>
+                <li>Research</li>
+                <li>Experts</li>
+                <li>Managed Website</li>
+                <li>Marketing Service</li>
+            </div>
+
+            <div class="footer-col">
+                <h3>Newsletter</h3>
+                <p>What’s New at Future Academy?</p>
+                <div class="subscribe">
+                    <input type="text" placeholder="Your Email address">
+                    <a href="#" class="courses">SUBSCRIBE</a>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- Script -->
@@ -85,16 +206,135 @@
         let webstore = new Vue({
             el: "#app",
             data: {
+                sitename: "Our Top Rated Courses",
                 showContact: false,
                 showAbout: false,
+                showProduct: true,
                 showNavBar: true,
+                school: {
+                    name: 'Future Academy',
+                    logo: 'images/logo1.png'
+                },
+
+                products: [
+                    {
+                        id: 8181,
+                        title: "Python",
+                        location: 'Dubai',
+                        price: 20.99,
+                        image: "images/python.webp",
+                        availableInventory: 5,
+                        orderedQuantity: 0,
+                        rating: 239,
+                        stars: 5,
+
+                    },
+                    {
+                        id: 8182,
+                        title: "AI",
+                        location: 'California',
+                        price: 80.99,
+                        image: "images/AI.jpg",
+                        availableInventory: 4,
+                        orderedQuantity: 0,
+                        rating: 220,
+                        stars: 5,
+                    },
+                    {
+                        id: 8183,
+                        title: "HTML",
+                        location: 'NewYork',
+                        price: 169.99,
+                        image: "images/htmlcssjava.jpg",
+                        availableInventory: 9,
+                        orderedQuantity: 0,
+                        rating: 239,
+                        stars: 5,
+                    },
+                    {
+                        id: 8184,
+                        title: "C++",
+                        location: 'Portugal',
+                        price: 59.99,
+                        image: "images/C++.png",
+                        availableInventory: 3,
+                        orderedQuantity: 0,
+                        rating: 82,
+                        stars: 5,
+                    },
+                    {
+                        id: 8185,
+                        title: "JAVA",
+                        location: 'Paris',
+                        price: 110.99,
+                        image: "images/java.jpeg",
+                        availableInventory: 6,
+                        orderedQuantity: 0,
+                        rating: 145,
+                        stars: 4,
+                    },
+                    {
+                        id: 8186,
+                        title: "Operating System",
+                        location: 'Spain',
+                        price: 80.99,
+                        image: "images/operatingsystem.jpg",
+                        availableInventory: 5,
+                        orderedQuantity: 0,
+                        rating: 121,
+                        stars: 4,
+                    },
+                    {
+                        id: 8187,
+                        title: "Math",
+                        location: 'Pakistan',
+                        price: 110.99,
+                        image: "images/math.jpeg",
+                        availableInventory: 4,
+                        orderedQuantity: 0,
+                        rating: 201,
+                        stars: 5,
+                    },
+                    {
+                        id: 8188,
+                        title: "Ethical Hacking",
+                        location: 'Russia',
+                        price: 165.99,
+                        image: "images/Ethicalhacking.png",
+                        availableInventory: 3,
+                        orderedQuantity: 0,
+                        rating: 211,
+                        stars: 5,
+                    },
+                    {
+                        id: 8189,
+                        title: "Cyber Security",
+                        location: 'Canada',
+                        price: 190.99,
+                        image: "images/cybersecurity.jpeg",
+                        availableInventory: 4,
+                        orderedQuantity: 0,
+                        rating: 176,
+                        stars: 4,
+                    },
+                    {
+                        id: 8190,
+                        title: "Video Editing",
+                        location: 'Austrailia',
+                        price: 90.99,
+                        image: "images/VE.jpg",
+                        availableInventory: 5,
+                        orderedQuantity: 0,
+                        rating: 129,
+                        stars: 4,
+                    },
+                ],
                 cart: [],
-                
             },
             methods: {
                 showHome: function () {
                     this.showHomeContent = true;
-                },
+                }
             },
         });
     </script>
