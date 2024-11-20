@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-6</title>
+    <title>Commit-7</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
     <link rel="stylesheet" href="index.css">
@@ -21,12 +21,13 @@
         <header>
             <!-- NavBar -->
             <nav v-show="showNavBar">
-                <img src="./Images/logo1.png" alt="">
+                <img src="./images/logo1.png" alt="">
                 <div class="navigation">
                     <ul>
                         <div id="search-box">
                             <i class="fas fa-search search-icon"></i>
-                            <input id="search-area">
+                            <input placeholder="Search Courses"
+                                id="search-area">
                         </div>
                         <li><a href="#" v-on:click="showHome">Home</a></li>
                         <li><a href="#" @click="showCourses">Courses</a></li>
@@ -64,7 +65,7 @@
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
                 <div class="about-profile">
-                    <img src="Images/profile1.jpg" alt="">
+                    <img src="images/profile1.jpg" alt="">
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
                         equips students with practical skills and knowledge for their future careers.</p>
@@ -105,8 +106,9 @@
                         </div>
                         <h2>Sort & Filter<i class="fa-solid fa-filter"></i></h2>
                         <select v-model="sortBy">
-                            <option value="title">Sort by</option>
-                            <option value="availability">Availability</option>
+                            <option value="">Sort by</option>
+                            <option value="title">Name</option>
+                            <option value="availableInventory">Availability</option>
                             <option value="price">Price</option>
                             <option value="location">Location</option>
                         </select>
@@ -134,17 +136,17 @@
                         <section id="modules">
                             <h2 class="product-item">{{ product.title }}</h2>
                             <p class="product-item product-location">{{ product.location }}</p>
-                            <p>{{ product.description }}</p>
                             <p v-if="product.availableInventory > 0">In stock: {{ product.availableInventory }}</p>
                             <p v-else class="out-of-stock">Out of stock</p>
                             <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
                             <p class="price">${{ product.price }}</p>
-                            <button @click="addToCart(product)" v-if="product.availableInventory > 0"
+                            <!-- <button @click="addToCart(product)" v-if="product.availableInventory > 0"
                                 class="add-button">
                                 <i class="fas fa-cart-plus"></i>
-                            </button>
-                            <button disabled v-else class="add-button">
-                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button> -->
+                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0"
+                                class="add-button">
+                                <i class="fas fa-cart-plus"></i>
                             </button>
                         </section>
                     </div>
@@ -173,7 +175,7 @@
                         and this website is part of a project for my course</p>
                     <div class="creater-box">
                         <div class="profile">
-                            <img src="Images/profile1.jpg" alt="">
+                            <img src="images/profile1.jpg" alt="">
                             <h6>Kabeer Kumar</h6>
                             <p>HTML Websites Creater</p>
                             <div class="pro-links">
@@ -205,11 +207,11 @@
                                 <div class="cart-product-subsection">
                                     <!-- <p class="qty">Qty: </p> -->
                                     <div class="cart-product-quantity">
-                                        <select v-model="item.orderedQuantity" @change="updateCartQuantity(item)"
-                                            class="quantity-dropdown">
-                                            <option v-for="n in item.availableInventory" :key="n" :value="n">{{ n }}
-                                            </option>
-                                        </select>
+                                        <button @click="subtractFromCart(item)" class="quantity-button"
+                                            :disabled="item.orderedQuantity === 0">-</button>
+                                        <p class="cart-product-count">{{ item.orderedQuantity }}</p>
+                                        <button @click="addToCart(item)" class="quantity-button"
+                                            :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
                                 </div>
@@ -239,6 +241,75 @@
                         </span>
                         <a href="#checkout-form"><button v-on:click="showFormSection()" id="ptcButton">PROCEED TO
                                 CHECKOUT</button></a>
+                    </div>
+                </section>
+
+                <section v-if="!showThankYouPage && showForm" id="checkout-section">
+                    <div id="checkout-form">
+                        <h3 class="title">Checkout Form <i class="fa-solid fa-bag-shopping"></i></h3>
+                        <h4>Billing Address</h4>
+                        <input v-model.trim="order.firstName" type="text" placeholder="First Name" class="form-input">
+                        <input v-model.trim="order.lastName" type="text" placeholder="Last Name" class="form-input">
+                        <input v-model.trim="order.email" type="text" placeholder="Email Address" class="form-input">
+                        <input v-model.trim="order.phone" type="text" placeholder="Phone Number" class="form-input">
+                        <input v-model.trim="order.address" type="text" placeholder="Address" class="form-input">
+                        <input v-model.trim="order.city" type="text" placeholder="City" class="form-input">
+                        <input v-model.trim="order.zip" type="text" placeholder="Zip or Postal Code" class="form-input">
+                        <select v-model="order.state" class="form-input">
+                            <option disabled value="">State</option>
+                            <option v-for="(state, key) in states"
+                                v-bind:value="state">
+                                {{key}}
+                            </option>
+                        </select>
+                        <span class="form-span">
+                            <input type="checkbox" v-model="order.promotions" :true-value="order.sendpromotions"
+                                :false-value="order.dontSendpromotions">
+                            <label for="gift">promotions</label>
+                        </span>
+                        <span class="form-address">
+                            <input type="radio" value="Home" v-model="order.method">
+                            <label for="home">Home</label>
+                            <input type="radio" value="Business" v-model="order.method">
+                            <label for="business">Business</label>
+                        </span>
+                        <!-- Disable button if form is incomplete -->
+                        <button class="btn2" v-on:click="submitForm1">
+                            Place Order
+                        </button>
+                    </div>
+
+                    <div id="billing-information">
+                        <figure class="receipt-figure">
+                            <img v-bind:src="school.logo" class="receipt-img">
+                        </figure>
+                        <h4>Bill Overview</h4>
+                        <hr class="receipt-line">
+                        <span class="receipt-span">
+                            <p class="bill-label">Payer Name: </p>
+                            <p class="bill-answer">{{ order.firstName }} {{ order.lastName }}</p>
+                        </span>
+                        <span class="receipt-span">
+                            <p class="bill-label">Phone Number: </p>
+                            <p class="bill-answer">{{ order.phone }}</p>
+                        </span>
+                        <span class="receipt-span">
+                            <p class="bill-label">Address: </p>
+                            <p class="bill-answer">{{ order.address }}, {{ order.city }}, {{ order.state }}</p>
+                        </span>
+                        <span class="receipt-span">
+                            <p class="bill-label">Zip: </p>
+                            <p class="bill-answer">{{ order.zip }}</p>
+                        </span>
+                        <span class="receipt-span">
+                            <p class="bill-label">promotions: </p>
+                            <p class="bill-answer">{{ order.promotions }}</p>
+                        </span>
+                        <span class="receipt-span">
+                            <p class="bill-label">Method: </p>
+                            <p class="bill-answer">{{ order.method }}</p>
+                        </span>
+                        <hr class="receipt-line">
                     </div>
                 </section>
             </div>
@@ -298,15 +369,17 @@
                 showContact: false,
                 showAbout: false,
                 showProduct: true,
+                showCartButton: false,
                 showHomeContent: true,
                 showCoursesOnly: false,
                 showSortSection: false,
                 showNavBar: true,
+                showForm: false,
                 showImageModal: false,
                 currentImage: '',
                 school: {
                     name: 'Future Academy',
-                    logo: 'Images/logo1.png'
+                    logo: 'images/logo1.png'
                 },
 
                 products: [
@@ -315,7 +388,7 @@
                         title: "Python",
                         location: 'Dubai',
                         price: 20.99,
-                        image: "Images/python.webp",
+                        image: "images/python.webp",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 239,
@@ -327,8 +400,8 @@
                         title: "AI",
                         location: 'California',
                         price: 80.99,
-                        image: "Images/AI.jpg",
-                        availableInventory: 4,
+                        image: "images/AI.jpg",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 220,
                         stars: 5,
@@ -338,8 +411,8 @@
                         title: "HTML",
                         location: 'NewYork',
                         price: 169.99,
-                        image: "Images/htmlcssjava.jpg",
-                        availableInventory: 9,
+                        image: "images/htmlcssjava.jpg",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 239,
                         stars: 5,
@@ -349,8 +422,8 @@
                         title: "C++",
                         location: 'Portugal',
                         price: 59.99,
-                        image: "Images/C++.png",
-                        availableInventory: 3,
+                        image: "images/C++.png",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 82,
                         stars: 5,
@@ -360,8 +433,8 @@
                         title: "JAVA",
                         location: 'Paris',
                         price: 110.99,
-                        image: "Images/java.jpeg",
-                        availableInventory: 6,
+                        image: "images/java.jpeg",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 145,
                         stars: 4,
@@ -371,7 +444,7 @@
                         title: "Operating System",
                         location: 'Spain',
                         price: 80.99,
-                        image: "Images/operatingsystem.jpg",
+                        image: "images/operatingsystem.jpg",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 121,
@@ -382,8 +455,8 @@
                         title: "Math",
                         location: 'Pakistan',
                         price: 110.99,
-                        image: "Images/math.jpeg",
-                        availableInventory: 4,
+                        image: "images/math.jpeg",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 201,
                         stars: 5,
@@ -393,8 +466,8 @@
                         title: "Ethical Hacking",
                         location: 'Russia',
                         price: 165.99,
-                        image: "Images/Ethicalhacking.png",
-                        availableInventory: 3,
+                        image: "images/Ethicalhacking.png",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 211,
                         stars: 5,
@@ -404,8 +477,8 @@
                         title: "Cyber Security",
                         location: 'Canada',
                         price: 190.99,
-                        image: "Images/cybersecurity.jpeg",
-                        availableInventory: 4,
+                        image: "images/cybersecurity.jpeg",
+                        availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 176,
                         stars: 4,
@@ -415,7 +488,7 @@
                         title: "Video Editing",
                         location: 'Austrailia',
                         price: 90.99,
-                        image: "Images/VE.jpg",
+                        image: "images/VE.jpg",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 129,
@@ -423,7 +496,26 @@
                     },
                 ],
                 cart: [],
-                sortBy: 'title',
+                order: {
+                    firstName: '',
+                    lastName: '',
+                    phone: '',
+                    address: '',
+                    city: '',
+                    state: '',
+                    zip: '',
+                    promotions: 'Subscribe to Offers',
+                    sendpromotions: 'Subscribe to Offers',
+                    dontSendpromotions: 'No Thanks',
+                    method: 'Home',
+                },
+                states: {
+                    AL: "Alabama",
+                    AR: "Arizona",
+                    CA: "California",
+                    NV: "Nevada"
+                },
+                sortBy: '',
                 sortOrder: 'asc',
             },
             methods: {
@@ -440,6 +532,8 @@
                         this.showForm = true;
                     } else {
                         alert("Please add at least one course to the cart before proceeding to checkout.");
+                        this.showProduct = true;
+                        this.showSortSection = true;
                     }
                 },
 
@@ -483,55 +577,78 @@
                 goToCourses() {
                     this.showProduct = !this.showProduct;
                     this.sitename = sitename;
+                    this.showSortSection = true;
                 },
 
                 addToCart: function (product) {
                     if (product.availableInventory > 0) {
-                        product.availableInventory--;
-                        const cartProduct = this.cart.find(item => item.id === product.id);
+                        let cartProduct = this.cart.find(item => item.id === product.id);
+
                         if (cartProduct) {
-                            cartProduct.orderedQuantity++;
+                            cartProduct.orderedQuantity++; // Update cart quantity
                         } else {
-                            // Add a new product with initial quantity 1
-                            this.cart.push({ ...product, orderedQuantity: 1 });
+                            // Push the actual reference of the product, not a shallow copy
+                            this.cart.push(product);
+                            product.orderedQuantity = 1; // Initialize in the product
                         }
+
+                        product.availableInventory--; // Decrement inventory in the original product reference
                         this.showCartButton = true;
+                    } else {
+                        alert("Product is out of stock!");
+                    }
+                },
+
+
+                subtractFromCart: function (product) {
+                    let cartProduct = this.cart.find(item => item.id === product.id);
+
+                    if (cartProduct && cartProduct.orderedQuantity > 0) {
+                        cartProduct.orderedQuantity--;
+                        product.availableInventory++; // Increment inventory for the actual product
+
+                        if (cartProduct.orderedQuantity === 0) {
+                            const index = this.cart.indexOf(cartProduct);
+                            this.cart.splice(index, 1); // Remove product from cart when quantity is 0
+                        }
+                        this.showCartButton = this.cart.length > 0;
                     }
                 },
 
                 removeFromCart: function (product) {
-                    const productIndex = this.cart.findIndex(item => item.id === product.id);
+                    const cartIndex = this.cart.findIndex(item => item.id === product.id);
 
-                    if (productIndex > -1) {
+                    if (cartIndex > -1) {
+                        // Update product availability in the products array
+                        const productInStore = this.products.find(item => item.id === product.id);
+                        if (productInStore) {
+                            // Add the ordered quantity back to available inventory
+                            productInStore.availableInventory += product.orderedQuantity;
+                        }
+
                         // Remove the product from the cart
-                        this.cart.splice(productIndex, 1);
+                        this.cart.splice(cartIndex, 1);
 
                         // Check if the cart is now empty and update the visibility of the cart button
                         this.showCartButton = this.cart.length > 0;
                     }
                 },
-                clearForm() {
-                    // Reset each field to an empty or default state
-                    this.order = {
-                        firstName: '',
-                        lastName: '',
-                        address: '',
-                        city: '',
-                        state: '',
-                        zip: '',
-                        gift: false,
-                        method: 'Home',
-                    };
+
+                submitForm1() {
+                    alert("Order submitted!");
+                    this.showProduct = true;
                 },
                 goToHome() {
+                    // Reset all relevant states for returning to the home page
+                    // this.showThankYouPage = false;
                     this.showProduct = true;
                     this.showHomeContent = true;
                     this.showNavBar = true;
                     this.showCartButton = false;
-                    this.showThankYouPage = false;
                 }
 
             },
+
             computed: {
                 cartItemCount: function () {
                     return this.cart.reduce((total, cartProduct) => {
@@ -546,7 +663,6 @@
                         return total + item.price * item.orderedQuantity;
                     }, 0);
                 },
-                
 
             }
         });
