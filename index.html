@@ -8,10 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-5</title>
+    <title>Commit-6</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
-    <link rel="stylesheet" href="commit5.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
@@ -21,13 +21,12 @@
         <header>
             <!-- NavBar -->
             <nav v-show="showNavBar">
-                <img src="./images/logo1.png" alt="">
+                <img src="./Images/logo1.png" alt="">
                 <div class="navigation">
                     <ul>
                         <div id="search-box">
                             <i class="fas fa-search search-icon"></i>
-                            <input type="text" name="search" placeholder="Search Courses" v-model="searchQuery"
-                                id="search-area">
+                            <input id="search-area">
                         </div>
                         <li><a href="#" v-on:click="showHome">Home</a></li>
                         <li><a href="#" @click="showCourses">Courses</a></li>
@@ -65,7 +64,7 @@
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
                 <div class="about-profile">
-                    <img src="images/profile1.jpg" alt="">
+                    <img src="Images/profile1.jpg" alt="">
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
                         equips students with practical skills and knowledge for their future careers.</p>
@@ -174,7 +173,7 @@
                         and this website is part of a project for my course</p>
                     <div class="creater-box">
                         <div class="profile">
-                            <img src="images/profile1.jpg" alt="">
+                            <img src="Images/profile1.jpg" alt="">
                             <h6>Kabeer Kumar</h6>
                             <p>HTML Websites Creater</p>
                             <div class="pro-links">
@@ -194,6 +193,35 @@
                     <button @click="goToCourses" class="back-to-shop-btn"><i class="fa-solid fa-arrow-left"></i>Back To
                         Shop</button>
                     <h2 class="title1">Your Cart <i class="fa-solid fa-cart-shopping"></i></h2>
+                    <div>
+                        <div v-for="item in cartItems" :key="item.id" class="cart-product">
+                            <figure class="cart-product-figure">
+                                <img :src="item.image" class="cart-product-img" alt="Product image">
+                            </figure>
+                            <div class="cart-product-info">
+                                <h2 class="cart-product-title">{{ item.title }}</h2>
+                                <p class="cart-product-location">{{ item.location }}</p>
+                                <!-- Quantity controls -->
+                                <div class="cart-product-subsection">
+                                    <!-- <p class="qty">Qty: </p> -->
+                                    <div class="cart-product-quantity">
+                                        <select v-model="item.orderedQuantity" @change="updateCartQuantity(item)"
+                                            class="quantity-dropdown">
+                                            <option v-for="n in item.availableInventory" :key="n" :value="n">{{ n }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <p class="cart-product-rate">${{ item.price }}</p>
+                                </div>
+                                <p v-on:click="removeFromCart(item)" class="remove"><i class="fa-solid fa-trash"></i>
+                                </p>
+                            </div>
+                            <div>
+                                <!-- Product price -->
+                                <p class="cart-product-price">${{ item.price * item.orderedQuantity }}</p>
+                            </div>
+                        </div>
+                    </div>
                     <div id="price-overview">
                         <h3 class="title">Subtotal</h3>
                         <hr class="po-line">
@@ -213,8 +241,6 @@
                                 CHECKOUT</button></a>
                     </div>
                 </section>
-
-                
             </div>
         </main>
         <!-- Footer visible when not showing only courses -->
@@ -274,12 +300,13 @@
                 showProduct: true,
                 showHomeContent: true,
                 showCoursesOnly: false,
+                showSortSection: false,
                 showNavBar: true,
                 showImageModal: false,
                 currentImage: '',
                 school: {
                     name: 'Future Academy',
-                    logo: 'images/logo1.png'
+                    logo: 'Images/logo1.png'
                 },
 
                 products: [
@@ -288,7 +315,7 @@
                         title: "Python",
                         location: 'Dubai',
                         price: 20.99,
-                        image: "images/python.webp",
+                        image: "Images/python.webp",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 239,
@@ -300,7 +327,7 @@
                         title: "AI",
                         location: 'California',
                         price: 80.99,
-                        image: "images/AI.jpg",
+                        image: "Images/AI.jpg",
                         availableInventory: 4,
                         orderedQuantity: 0,
                         rating: 220,
@@ -311,7 +338,7 @@
                         title: "HTML",
                         location: 'NewYork',
                         price: 169.99,
-                        image: "images/htmlcssjava.jpg",
+                        image: "Images/htmlcssjava.jpg",
                         availableInventory: 9,
                         orderedQuantity: 0,
                         rating: 239,
@@ -322,7 +349,7 @@
                         title: "C++",
                         location: 'Portugal',
                         price: 59.99,
-                        image: "images/C++.png",
+                        image: "Images/C++.png",
                         availableInventory: 3,
                         orderedQuantity: 0,
                         rating: 82,
@@ -333,7 +360,7 @@
                         title: "JAVA",
                         location: 'Paris',
                         price: 110.99,
-                        image: "images/java.jpeg",
+                        image: "Images/java.jpeg",
                         availableInventory: 6,
                         orderedQuantity: 0,
                         rating: 145,
@@ -344,7 +371,7 @@
                         title: "Operating System",
                         location: 'Spain',
                         price: 80.99,
-                        image: "images/operatingsystem.jpg",
+                        image: "Images/operatingsystem.jpg",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 121,
@@ -355,7 +382,7 @@
                         title: "Math",
                         location: 'Pakistan',
                         price: 110.99,
-                        image: "images/math.jpeg",
+                        image: "Images/math.jpeg",
                         availableInventory: 4,
                         orderedQuantity: 0,
                         rating: 201,
@@ -366,7 +393,7 @@
                         title: "Ethical Hacking",
                         location: 'Russia',
                         price: 165.99,
-                        image: "images/Ethicalhacking.png",
+                        image: "Images/Ethicalhacking.png",
                         availableInventory: 3,
                         orderedQuantity: 0,
                         rating: 211,
@@ -377,7 +404,7 @@
                         title: "Cyber Security",
                         location: 'Canada',
                         price: 190.99,
-                        image: "images/cybersecurity.jpeg",
+                        image: "Images/cybersecurity.jpeg",
                         availableInventory: 4,
                         orderedQuantity: 0,
                         rating: 176,
@@ -388,7 +415,7 @@
                         title: "Video Editing",
                         location: 'Austrailia',
                         price: 90.99,
-                        image: "images/VE.jpg",
+                        image: "Images/VE.jpg",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 129,
@@ -396,7 +423,8 @@
                     },
                 ],
                 cart: [],
-                
+                sortBy: 'title',
+                sortOrder: 'asc',
             },
             methods: {
                 showHome: function () {
@@ -407,11 +435,20 @@
                     this.showForm = false;
                 },
 
+                showFormSection: function () {
+                    if (this.cart.length > 0) {
+                        this.showForm = true;
+                    } else {
+                        alert("Please add at least one course to the cart before proceeding to checkout.");
+                    }
+                },
+
                 showCheckout: function () {
                     this.showProduct = !this.showProduct;
                     this.showHomeContent = false;
                     this.showCoursesContent = false;
                     this.showRegisterForm = false;
+                    this.showForm = false;
                 },
 
                 showCourses: function () {
@@ -427,6 +464,19 @@
                 },
                 closeImageModal() {
                     this.showImageModal = false;
+                },
+
+                toggleSortSection() {
+                    this.showSortSection = !this.showSortSection;
+                },
+
+
+                closeSortSection() {
+                    this.showSortSection = false;
+                },
+
+                submitForm() {
+                    this.showRegisterForm = false;
                 },
 
                 // Back To Shop (Courses Page) Btn
@@ -449,6 +499,38 @@
                     }
                 },
 
+                removeFromCart: function (product) {
+                    const productIndex = this.cart.findIndex(item => item.id === product.id);
+
+                    if (productIndex > -1) {
+                        // Remove the product from the cart
+                        this.cart.splice(productIndex, 1);
+
+                        // Check if the cart is now empty and update the visibility of the cart button
+                        this.showCartButton = this.cart.length > 0;
+                    }
+                },
+                clearForm() {
+                    // Reset each field to an empty or default state
+                    this.order = {
+                        firstName: '',
+                        lastName: '',
+                        address: '',
+                        city: '',
+                        state: '',
+                        zip: '',
+                        gift: false,
+                        method: 'Home',
+                    };
+                },
+                goToHome() {
+                    this.showProduct = true;
+                    this.showHomeContent = true;
+                    this.showNavBar = true;
+                    this.showCartButton = false;
+                    this.showThankYouPage = false;
+                }
+
             },
             computed: {
                 cartItemCount: function () {
@@ -464,6 +546,7 @@
                         return total + item.price * item.orderedQuantity;
                     }, 0);
                 },
+                
 
             }
         });
