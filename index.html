@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-9</title>
+    <title>Future Tech Academy</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
     <link rel="stylesheet" href="index.css">
@@ -35,7 +35,7 @@
                         </li>
                         <li><a @mouseover="showContact = true" @mouseleave="showContact = false"
                                 class="nav-item">Contact</a></li>
-                        <button id="checkout_button" v-on:click="showCheckout">
+                        <button id="checkout_button" v-on:click="showCheckout" v-show="showCartButton">
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
@@ -245,24 +245,52 @@
                                 CHECKOUT</button></a>
                     </div>
                 </section>
+                <section v-if="showThankYouPage" id="thank-you-section">
+                    <div class="thank-you-message">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <h2>Thank you for shopping!</h2>
+                        <button class="btn-home" @click="goToHome">Back to Home</button>
+                    </div>
+                </section>
 
                 <section v-if="!showThankYouPage && showForm" id="checkout-section">
                     <div id="checkout-form">
                         <h3 class="title">Checkout Form <i class="fa-solid fa-bag-shopping"></i></h3>
                         <h4>Billing Address</h4>
-                        <input v-model.trim="order.firstName" type="text" placeholder="First Name" class="form-input">
-                        <input v-model.trim="order.lastName" type="text" placeholder="Last Name" class="form-input">
-                        <input v-model.trim="order.email" type="text" placeholder="Email Address" class="form-input">
-                        <input v-model.trim="order.phone" type="text" placeholder="Phone Number" class="form-input">
+                        <!-- First Name Input with Shake Animation -->
+                        <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text"
+                            placeholder="First Name" :class="{'invalid-input': order.firstName && !isFirstNameValid}"
+                            class="form-input">
+                        <p v-if="order.firstName && !isFirstNameValid" class="error">
+                            First name must contain only letters.</p>
+
+                        <!-- Last Name Input with Shake Animation -->
+                        <input v-model.trim="order.lastName" :key="shakeKeyLastName" type="text" placeholder="Last Name"
+                            :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input">
+                        <p v-if="order.lastName && !isLastNameValid" class="error">
+                            Last name must contain only letters.</p>
+
+                        <!-- Email Input with Shake Animation -->
+                        <input v-model.trim="order.email" :key="shakeKeyEmail" type="email" placeholder="Email Address"
+                            :class="{'invalid-input': order.email && !isEmailValid}" class="form-input">
+                        <p v-if="order.email && !isEmailValid" class="error">
+                            Please enter a valid email address.
+                        </p>
+
+                        <!-- Phone Number Input -->
+                        <input v-model.trim="order.phone" :key="shakeKey" type="text" placeholder="Phone Number"
+                            :class="{'invalid-input': order.phone && !isPhoneValid}" class="form-input">
+                        <p v-if="order.phone && !isPhoneValid" class="error">
+                            Phone number must contain only numbers.
+                        </p>
+
+                        <!-- Other Form Fields (Address, City, etc.) -->
                         <input v-model.trim="order.address" type="text" placeholder="Address" class="form-input">
                         <input v-model.trim="order.city" type="text" placeholder="City" class="form-input">
-                        <input v-model.trim="order.zip" type="text" placeholder="Zip or Postal Code" class="form-input">
+                        <input v-model.trim="order.zip" type="text" placeholder="Postal Code" class="form-input">
                         <select v-model="order.state" class="form-input">
                             <option disabled value="">State</option>
-                            <option v-for="(state, key) in states"
-                                v-bind:value="state">
-                                {{key}}
-                            </option>
+                            <option v-for="(state, key) in states" :value="state">{{ key }}</option>
                         </select>
                         <span class="form-span">
                             <input type="checkbox" v-model="order.promotions" :true-value="order.sendpromotions"
@@ -499,6 +527,7 @@
                     },
                 ],
                 cart: [],
+                showThankYouPage: false,
                 order: {
                     firstName: '',
                     lastName: '',
@@ -512,6 +541,12 @@
                     dontSendpromotions: 'No Thanks',
                     method: 'Home',
                 },
+                // Key to reset first name, last name, and phone number animation
+                shakeKeyFirstName: 0,
+                shakeKeyLastName: 0,
+                shakeKeyEmail: 0,
+                shakeKeyPhone: 0,
+                shakeKey: 0,
                 states: {
                     AL: "Alabama",
                     AR: "Arizona",
@@ -639,7 +674,10 @@
 
                 submitForm1() {
                     alert("Order submitted!");
-                    this.showProduct = true;
+                    this.showThankYouPage = true;
+                    this.showNavBar = false;
+                    this.cart = []; // Clear cart items
+                    this.clearForm(); // Reset form fields
                 },
                 clearForm() {
                     // Reset each field to an empty or default state
@@ -664,6 +702,24 @@
                     this.showThankYouPage = false;
                 }
 
+            },
+
+            watch: {
+                'order.firstName'(newVal) {
+                    if (!this.isFirstNameValid && newVal) {
+                        this.shakeKeyFirstName++; // Trigger re-animation for first name
+                    }
+                },
+                'order.lastName'(newVal) {
+                    if (!this.isLastNameValid && newVal) {
+                        this.shakeKeyLastName++; // Trigger re-animation for last name
+                    }
+                },
+                'order.phone'(newVal) {
+                    if (!this.isPhoneValid && newVal) {
+                        this.shakeKey++; // Triggers re-animation
+                    }
+                },
             },
 
             computed: {
@@ -693,6 +749,38 @@
 
                         return matchesTitle || matchesLocation || matchesPrice || matchesAvailableInventory;
                     });
+                },
+
+                isFirstNameValid() {
+                    const nameRegex = /^[A-Za-z]+$/;
+                    return nameRegex.test(this.order.firstName);
+                },
+                isLastNameValid() {
+                    const nameRegex = /^[A-Za-z]+$/;
+                    return nameRegex.test(this.order.lastName);
+                },
+
+                isPhoneValid() {
+                    const phoneRegex = /^[0-9]+$/;
+                    return phoneRegex.test(this.order.phone);
+                },
+
+                isEmailValid() { // New email validation
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.order.email);
+                },
+
+                isFormComplete() {
+                    const nameRegex = /^[A-Za-z]+$/;
+
+                    return (
+                        nameRegex.test(this.order.firstName) &&
+                        nameRegex.test(this.order.lastName) &&
+                        this.isPhoneValid &&
+                        this.order.address.trim() !== '' &&
+                        this.order.city.trim() !== '' &&
+                        this.order.zip.trim() !== '' &&
+                        this.order.state.trim() !== ''
+                    );
                 },
                 sortedFilteredProducts() {
                     const sortedArray = [...this.filteredProducts];

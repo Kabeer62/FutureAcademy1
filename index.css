@@ -238,7 +238,7 @@ nav .navigation ul li a.active {
 
 #home {
     background-image: linear-gradient(rgba(9, 5, 54, 0.3), rgba(5, 4, 46, 0.7)),
-    url(/images/backgroundimage.jpg);
+    url(./images/backgroundimage.jpg);
     margin-top: 3rem;
     width: 100%;
     height: 100vh;
@@ -659,7 +659,7 @@ button {
 #register {
     padding: 6vw 8vw 6vw 8vw;
     background-image: linear-gradient(rgba(99, 112, 168, 0.5), rgba(81, 91, 233, 0.5)),
-        url(./images/IT-background.webp);
+        url(Images/IT-background.webp);
     width: 100%;
     height: 92vh;
     background-size: cover;
