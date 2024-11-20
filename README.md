@@ -7,3 +7,4 @@ https://kabeer62.github.io/FutureAcademy1/
 ## Commit 3 - Subjects
 ## Commit 4 - Courses Page
 ## Commit 5 - AddToCart
+## Commit 6 - Cart Section

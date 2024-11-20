@@ -8,9 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-4</title>
+    <title>Commit-5</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
-    <link rel="stylesheet" href="commit4.css">
+
+    <link rel="stylesheet" href="commit5.css">
 </head>
 
 <body>
@@ -34,7 +35,8 @@
                         </li>
                         <li><a @mouseover="showContact = true" @mouseleave="showContact = false"
                                 class="nav-item">Contact</a></li>
-                        <button id="checkout_button"><i class="fa-solid fa-cart-shopping"></i>
+                        <button id="checkout_button" v-on:click="showCheckout">
+                            &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
                 </div>
@@ -93,12 +95,39 @@
                         <a class="courses" href="#" @click="showCourses">Visit Courses</a>
                     </div>
                 </section>
+
+                <section v-if="showCoursesOnly" id="sort-toggle-section">
+                    <button @click="toggleSortSection" class="sort-toggle-btn">Filter By</button>
+                    <div class="sort-options" v-show="showSortSection">
+                        <div class="tags">
+                            <span class="close-tag" v-on:click="closeSortSection">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </span>
+                        </div>
+                        <h2>Sort & Filter<i class="fa-solid fa-filter"></i></h2>
+                        <select v-model="sortBy">
+                            <option value="title">Sort by</option>
+                            <option value="availability">Availability</option>
+                            <option value="price">Price</option>
+                            <option value="location">Location</option>
+                        </select>
+                        <select v-model="sortOrder">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </div>
+                </section>
                 <!-- Loop through products -->
 
                 <h1 id="title" v-text="sitename"></h1>
                 <section id="products-section">
                     <div v-for="product in products" :key="product.id" class="product-item">
-                        
+                        <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
+                            <div class="modal-content" @click.stop>
+                                <span class="close-btn" @click="closeImageModal">&times;</span>
+                                <img :src="currentImage" alt="Product image" class="modal-image">
+                            </div>
+                        </div>
 
                         <figure @click="openImageModal(product.image)">
                             <img :src="product.image" alt="Product image">
@@ -160,7 +189,33 @@
             </section>
 
             <!-- Courses Form End-->
-            
+            <div v-else>
+                <section v-if="!showForm && !showThankYouPage" id="cart-section">
+                    <button @click="goToCourses" class="back-to-shop-btn"><i class="fa-solid fa-arrow-left"></i>Back To
+                        Shop</button>
+                    <h2 class="title1">Your Cart <i class="fa-solid fa-cart-shopping"></i></h2>
+                    <div id="price-overview">
+                        <h3 class="title">Subtotal</h3>
+                        <hr class="po-line">
+                        <span class="po-span">
+                            <p class="po-text">SUBTOTAL</p>
+                            <p class="price-text">${{ cartSubtotal.toFixed(2) }}</p>
+                        </span>
+                        <span class="po-span">
+                            <p class="po-text">TAX</p>
+                            <p class="price-text">$0.00</p>
+                        </span>
+                        <span class="po-span-2">
+                            <p class="po-text">TOTAL</p>
+                            <p class="price-text">${{ cartSubtotal.toFixed(2)}}</p>
+                        </span>
+                        <a href="#checkout-form"><button v-on:click="showFormSection()" id="ptcButton">PROCEED TO
+                                CHECKOUT</button></a>
+                    </div>
+                </section>
+
+                
+            </div>
         </main>
         <!-- Footer visible when not showing only courses -->
         <footer v-if="showHomeContent">
@@ -220,6 +275,8 @@
                 showHomeContent: true,
                 showCoursesOnly: false,
                 showNavBar: true,
+                showImageModal: false,
+                currentImage: '',
                 school: {
                     name: 'Future Academy',
                     logo: 'images/logo1.png'
@@ -347,6 +404,14 @@
                     this.showCoursesContent = false;
                     this.showCoursesOnly = false;
                     this.showProduct = true;
+                    this.showForm = false;
+                },
+
+                showCheckout: function () {
+                    this.showProduct = !this.showProduct;
+                    this.showHomeContent = false;
+                    this.showCoursesContent = false;
+                    this.showRegisterForm = false;
                 },
 
                 showCourses: function () {
@@ -356,9 +421,18 @@
                     this.showRegisterForm = false;
                 },
 
+                openImageModal(image) {
+                    this.currentImage = image;
+                    this.showImageModal = true;
+                },
+                closeImageModal() {
+                    this.showImageModal = false;
+                },
+
                 // Back To Shop (Courses Page) Btn
                 goToCourses() {
                     this.showProduct = !this.showProduct;
+                    this.sitename = sitename;
                 },
 
                 addToCart: function (product) {
@@ -384,6 +458,11 @@
                 },
                 cartItems() {
                     return this.cart;
+                },
+                cartSubtotal() {
+                    return this.cart.reduce((total, item) => {
+                        return total + item.price * item.orderedQuantity;
+                    }, 0);
                 },
 
             }
