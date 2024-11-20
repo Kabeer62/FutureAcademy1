@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Commit-8</title>
+    <title>Commit-9</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
     <link rel="stylesheet" href="index.css">
@@ -122,14 +122,14 @@
 
                 <h1 id="title" v-text="sitename"></h1>
                 <section id="products-section">
-                    <div v-for="product in filteredProducts" :key="product.id" class="product-item">
+                    <div v-for="product in sortedFilteredProducts" :key="product.id" class="product-item">
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
                                 <img :src="currentImage" alt="Product image" class="modal-image">
                             </div>
                         </div>
-                
+
                         <figure @click="openImageModal(product.image)">
                             <img :src="product.image" alt="Product image">
                         </figure>
@@ -140,14 +140,18 @@
                             <p v-else class="out-of-stock">Out of stock</p>
                             <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
                             <p class="price">${{ product.price }}</p>
-                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0" class="add-button">
+                            <!-- <button @click="addToCart(product)" v-if="product.availableInventory > 0"
+                                class="add-button">
+                                <i class="fas fa-cart-plus"></i>
+                            </button> -->
+                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0"
+                                class="add-button">
                                 <i class="fas fa-cart-plus"></i>
                             </button>
                         </section>
                     </div>
-                    <p v-if="filteredProducts.length === 0" class="no-match-message">
-                        No match found for your search.
-                    </p>
+                    <p v-if="sortedFilteredProducts.length === 0" class="no-match-message">No match found for your
+                        search.</p>
                 </section>
 
                 <!-- Register Form -->
@@ -241,13 +245,6 @@
                                 CHECKOUT</button></a>
                     </div>
                 </section>
-                <section v-if="showThankYouPage" id="thank-you-section">
-                    <div class="thank-you-message">
-                        <i class="fa-solid fa-check-circle"></i>
-                        <h2>Thank you for shopping!</h2>
-                        <button class="btn-home" @click="goToHome">Back to Home</button>
-                    </div>
-                </section>
 
                 <section v-if="!showThankYouPage && showForm" id="checkout-section">
                     <div id="checkout-form">
@@ -279,7 +276,7 @@
                             <label for="business">Business</label>
                         </span>
                         <!-- Disable button if form is incomplete -->
-                        <button class="btn2" v-on:click="submitForm1">
+                        <button class="btn2" v-if="isFormComplete" :disabled="!isFormComplete" v-on:click="submitForm1">
                             Place Order
                         </button>
                     </div>
@@ -685,16 +682,40 @@
                 },
 
                 filteredProducts() {
-        const query = this.searchQuery.toLowerCase();
-        return this.products.filter(product => {
-            return (
-                product.title.toLowerCase().includes(query) ||
-                product.location.toLowerCase().includes(query) ||
-                product.price.toString().includes(query) ||
-                product.availableInventory.toString().includes(query)
-            );
-        });
-    }
+                    return this.products.filter(product => {
+                        const query = this.searchQuery.toLowerCase();
+
+                        // Check if the title, location and price matches the query
+                        const matchesTitle = product.title.toLowerCase().includes(query);
+                        const matchesLocation = product.location.toLowerCase().includes(query);
+                        const matchesPrice = product.price.toString().includes(query);
+                        const matchesAvailableInventory = product.availableInventory.toString().includes(query);
+
+                        return matchesTitle || matchesLocation || matchesPrice || matchesAvailableInventory;
+                    });
+                },
+                sortedFilteredProducts() {
+                    const sortedArray = [...this.filteredProducts];
+
+                    if (this.sortBy) {
+                        sortedArray.sort((a, b) => {
+                            let compareA = a[this.sortBy];
+                            let compareB = b[this.sortBy];
+                            if (typeof compareA === 'string') {
+                                compareA = compareA.toLowerCase();
+                                compareB = compareB.toLowerCase();
+                            }
+
+                            if (this.sortOrder === 'asc') {
+                                return compareA > compareB ? 1 : -1;
+                            } else {
+                                return compareA < compareB ? 1 : -1;
+                            }
+                        });
+                    }
+
+                    return sortedArray;
+                }
 
             }
         });

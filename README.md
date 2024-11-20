@@ -11,3 +11,4 @@ https://kabeer62.github.io/FutureAcademy1/
 ## Commit 7 - Cart Section with Product
 ## Commit 8 - Form Section
 ## Commit 9 - Search Function
+## Commit 10 - Sort Function
