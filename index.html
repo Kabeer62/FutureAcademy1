@@ -8,28 +8,32 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>commit-12</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <title>Future Tech Academy</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/media.css">
 </head>
 
-<body onresize="app.updateScreenWidth()">
+<body>
 
     <div id="app">
         <!-- NavBar -->
         <header>
             <!-- NavBar -->
-            <nav v-show="showNavBar" v-if="!isMobileView">
+            <nav v-show="showNavBar">
                 <img src="./images/logo1.png" alt="">
                 <div class="navigation">
+
+                    <div id="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="search" placeholder="Search Courses" v-model="searchQuery"
+                            id="search-area">
+                    </div>
                     <ul>
-                        <div id="search-box">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" name="search" placeholder="Search Courses" v-model="searchQuery"
-                                id="search-area">
-                        </div>
+                        <i id="menu-close" class="fa-solid fa-x"></i>
                         <li><a href="#" v-on:click="showHome">Home</a></li>
                         <li><a href="#" @click="showCourses">Courses</a></li>
                         <li><a @mouseover="showAbout = true" @mouseleave="showAbout = false" class="nav-item">About</a>
@@ -40,38 +44,10 @@
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
+                    <img id="menu-btn" src="images/menu1.jpg" alt="">
                 </div>
             </nav>
-            <section v-else id="navigation-bar">
-                <!-- Hamburger Menu -->
-                <button v-on:click="showMenuSection" id="hamburger-menu"><i class="fa-solid fa-bars"></i></button>
-                <!-- Search Box -->
-                <div id="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input v-model="searchInput" type="text" name="search" id="search-area">
-                </div>
-                <!-- Cart Button -->
-                <a href="#cart-section">
-                <button v-if="cartItemCount > 0" v-on:click="showCartSection()" class="nav-item nav-button"><i class="fa-solid fa-cart-shopping"></i>&nbsp;<div class="cart-counter">{{cartItemCount}}</div></button>
-                </a>
-            </section>
-            <transition name="slide" mode="out-in">
-                <!-- Menu for small screens -->
-                <div id="menu-section" v-if="showMenu && isMobileView">
-                    <button v-on:click="showHomeSection2">HOME</button>
-                    <button v-on:click="showInfoSection">INFO &nbsp;<i v-if="!showInfo" class="fa-solid fa-chevron-down"></i><i v-else class="fa-solid fa-chevron-up"></i></button>
-                    <div v-show="showInfo" class="info-box">
-                        <p>This web app allows students and parents to explore and purchase after-school classes and activities. Users can browse lessons by subject, location, price, and availability. The app offers an intuitive shopping cart and checkout experience for easy enrollment.</p>
-                    </div>
-                    <button v-on:click="showContactSection">CONTACT &nbsp;<i v-if="!showContact" class="fa-solid fa-chevron-down"></i><i v-else class="fa-solid fa-chevron-up"></i></button>
-                    <div v-show="showContact" class="info-box">
-                        <p>Our Hotline is <a href="tel:+123456789">+1 234 56789</a>,</p><br><p>For SMS <a href="sms:123">"123"</a>,</p><br><p>Or Email Us at <a href="mailto:someone@example.com">someone@example.com</a></p>
-                    </div>
-                    <!-- <button v-on:click="showSortSection2">SORT</button> -->
-                    <button v-if="cartItemCount > 0" v-on:click="showCartSection2">CART<i class="fa-solid fa-cart-shopping"></i>&nbsp;<div class="cart-counter">{{cartItemCount}}</div></button>
-                </div>
-                </transition>
-            <div v-if="!isMobileView" @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
+            <div @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
                 v-show="showContact" class="info-box">
                 <h3 class="contact-us">Contact Us</h3>
                 <p><strong>Customer Support Hotline:</strong> <a href="tel:+123456789">+971563636822</a></p>
@@ -90,7 +66,7 @@
                                 class="fab fa-linkedin-in"></i></a></li>
                 </ul>
             </div>
-            <div v-if="!isMobileView" @mouseover="showAbout = true" @mouseleave="showAbout = false" id="about-info" v-show="showAbout"
+            <div @mouseover="showAbout = true" @mouseleave="showAbout = false" id="about-info" v-show="showAbout"
                 class="about-box">
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
@@ -237,7 +213,6 @@
                                 <p class="cart-product-location">{{ item.location }}</p>
                                 <!-- Quantity controls -->
                                 <div class="cart-product-subsection">
-                                    <!-- <p class="qty">Qty: </p> -->
                                     <div class="cart-product-quantity">
                                         <button @click="subtractFromCart(item)" class="quantity-button"
                                             :disabled="item.orderedQuantity === 0">-</button>
@@ -381,7 +356,7 @@
                 <li>Virtual Labs</li>
                 <li>Mentorship Programs</li>
                 <li>Online Libraries</li>
-                <li>Cloud Services (AWS, Azure, Google Cloud)</li>
+                <li>Cloud Services</li>
             </div>
 
             <div class="footer-col">
@@ -438,7 +413,6 @@
                 searchQuery: '',
                 showImageModal: false,
                 currentImage: '',
-                windowWidth: window.innerWidth,
                 school: {
                     name: 'Future Academy',
                     logo: 'images/logo1.png'
@@ -596,11 +570,6 @@
                     this.showForm = false;
                 },
 
-                showHomeSection2: function() {
-                    this.showHomeContent();
-                    this.showMenuSection();
-                },
-
                 showFormSection: function () {
                     if (this.cart.length > 0) {
                         this.showForm = true;
@@ -609,24 +578,6 @@
                         this.showProduct = true;
                         this.showSortSection = true;
                     }
-                },
-
-                showCartSection2: function() {
-                    this.showCartSection();
-                    this.showMenuSection();
-                },
-
-                showMenuSection: function() {
-                    this.showMenu = !this.showMenu;
-                    this.showInfo = false;
-                    this.showContact = false;
-                },
-
-                showInfoSection: function() {
-                    this.showInfo = !this.showInfo;
-                },
-                showContactSection: function() {
-                    this.showContact = !this.showContact;
                 },
 
                 showCheckout: function () {
@@ -754,10 +705,6 @@
                     this.showNavBar = true;
                     this.showCartButton = false;
                     this.showThankYouPage = false;
-                },
-
-                updateScreenWidth() {
-                    this.windowWidth = window.innerWidth; // Updates windowWidth when the window is resized
                 }
 
             },
@@ -861,13 +808,15 @@
                     }
 
                     return sortedArray;
-                },
-
-                isSmallScreen() {
-                    return this.windowWidth <= 768;
                 }
 
             }
+        });
+        $('#menu-btn').click(function () {
+            $('nav .navigation ul').addClass('active')
+        });
+        $('#menu-close').click(function () {
+            $('nav .navigation ul').removeClass('active')
         });
     </script>
 </body>
