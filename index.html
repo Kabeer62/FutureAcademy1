@@ -11,8 +11,8 @@
     <title>Future Tech Academy</title>
     <link rel="icon" type="image/x-icon" href="images/icon.webp">
 
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="media.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/media.css">
 </head>
 
 <body onresize="app.updateScreenWidth()">
@@ -616,6 +616,12 @@
                     this.showMenuSection();
                 },
 
+                showMenuSection: function() {
+                    this.showMenu = !this.showMenu;
+                    this.showInfo = false;
+                    this.showContact = false;
+                },
+
                 showInfoSection: function() {
                     this.showInfo = !this.showInfo;
                 },
@@ -855,6 +861,10 @@
                     }
 
                     return sortedArray;
+                },
+
+                isSmallScreen() {
+                    return this.windowWidth <= 768;
                 }
 
             }
