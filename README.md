@@ -13,3 +13,4 @@ https://kabeer62.github.io/FutureAcademy1/
 ## Commit 9 - Search Function
 ## Commit 10 - Sort Function
 ## Commit 11 - Hiding Btns (Cart, PlaceOrder) before adding the product or empty fields
+## Commit 12 - HTML And CSS Changes For Mobile
