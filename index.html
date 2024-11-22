@@ -221,8 +221,8 @@
                                             :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
+                                    <p v-on:click="removeFromCart(item)" class="remove"><i class="fa-solid fa-trash"></i>
                                 </div>
-                                <p v-on:click="removeFromCart(item)" class="remove"><i class="fa-solid fa-trash"></i>
                                 </p>
                             </div>
                             <div>
