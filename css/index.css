@@ -34,7 +34,9 @@ h6 {
     color: rgb(24, 24, 49);
 }
 
-
+html {
+    scroll-behavior: smooth;
+}
 
 /* Navigation */
 #app nav {
@@ -500,6 +502,7 @@ nav .navigation ul li a.active {
     font-weight: bold;
     text-align: center;
     margin-right: -70rem;
+    margin-top: 15rem;
 }
 
 figure {
@@ -943,7 +946,7 @@ footer .subscribe a.courses:hover {
 
 .cart-product-rate {
     font-weight: bold;
-    margin-left: 8rem;
+    margin-left: 4rem;
     margin-top: -3.8rem;
     color: var(--accent-color);
 }
@@ -961,8 +964,8 @@ footer .subscribe a.courses:hover {
 .remove {
     color: black;
     font-size: 16px;
-    margin-top: -2.6rem;
-    margin-right: -8rem;
+    margin-top: -3rem;
+    margin-right: -16rem;
     cursor: pointer;
 }
 
@@ -997,6 +1000,8 @@ footer .subscribe a.courses:hover {
     border-radius: 20px;
     width: 300px;
     height: 275px;
+    border-left: 1px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.649);
     text-align: left;
     margin-left: 100px;
     background-color: rgba(214, 214, 214, 0.552);
@@ -1106,14 +1111,14 @@ footer .subscribe a.courses:hover {
     margin-top: 3rem;
     background-color: #bfbfbf6a;
     width: 100vw;
-    height: 50vw;
+    height: auto;
     display: flex;
 }
 
 /* -- Checkout Form -- */
 #checkout-form {
     width: 60%;
-    height: 90%;
+    height: auto;
     margin-top: 2rem;
     margin-left: 2rem;
     background-color: rgba(255, 255, 255, 0.357);
@@ -1232,7 +1237,7 @@ footer .subscribe a.courses:hover {
 /* -- Billing Information -- */
 #billing-information {
     width: 30%;
-    height: 90%;
+    height: auto;
     margin-top: 2rem;
     margin-left: 5rem;
     padding: 1.5rem;
@@ -1267,7 +1272,7 @@ footer .subscribe a.courses:hover {
 hr.receipt-line {
     width: 100%;
     border-top: 1px dashed #ccc;
-    margin: 1rem 0;
+    margin: 0.1rem 0;
 }
 
 .receipt-span {
@@ -1279,7 +1284,7 @@ hr.receipt-line {
 }
 
 .bill-label {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-weight: 600;
     color: #555;
 }

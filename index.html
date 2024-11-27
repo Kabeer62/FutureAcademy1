@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/media.css">
+    <script src="server.js" defer></script>
 </head>
 
 <body>
@@ -102,7 +103,7 @@
                     </div>
                 </section>
 
-                <section v-if="showCoursesOnly" id="sort-toggle-section">
+                <section v-if="showCoursesOnly && sortedFilteredProducts.length > 0" id="sort-toggle-section">
                     <button @click="toggleSortSection" class="sort-toggle-btn">Filter By</button>
                     <div class="sort-options" v-show="showSortSection">
                         <div class="tags">
@@ -126,7 +127,7 @@
                 </section>
                 <!-- Loop through products -->
 
-                <h1 id="title" v-text="sitename"></h1>
+                <h1 id="title" v-if="sortedFilteredProducts.length > 0" v-text="sitename"></h1>
                 <section id="products-section">
                     <div v-for="product in sortedFilteredProducts" :key="product.id" class="product-item">
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
@@ -288,8 +289,6 @@
                         <p v-if="order.phone && !isPhoneValid" class="error">
                             Phone number must contain only numbers.
                         </p>
-
-                        <!-- Other Form Fields (Address, City, etc.) -->
                         <input v-model.trim="order.address" type="text" placeholder="Address" class="form-input">
                         <input v-model.trim="order.city" type="text" placeholder="City" class="form-input">
                         <input v-model.trim="order.zip" type="text" placeholder="Postal Code" class="form-input">
@@ -345,6 +344,13 @@
                             <p class="bill-answer">{{ order.method }}</p>
                         </span>
                         <hr class="receipt-line">
+                        <span class="receipt-span"><p class="bill-label">Product:</p><p class="bill-answer">Amount</p></span>
+                        <span v-for="item in cartItems" :key="item.id" class="receipt-span">
+                            <p class="bill-label">{{ item.title }} - {{item.orderedQuantity}}</p>
+                            <p class="bill-answer">${{ (item.price * item.orderedQuantity).toFixed(2) }}</p>
+                        </span>
+                        <hr class="receipt-line">
+                        <span class="receipt-span"><p class="bill-label">Total:</p><p class="bill-answer">${{ cartSubtotal.toFixed(2)}}</p></span>
                     </div>
                 </section>
             </div>
@@ -523,11 +529,33 @@
                         id: 8190,
                         title: "Video Editing",
                         location: 'Austrailia',
-                        price: 90.99,
+                        price: 99.99,
                         image: "images/VE.jpg",
                         availableInventory: 5,
                         orderedQuantity: 0,
                         rating: 129,
+                        stars: 4,
+                    },
+                    {
+                        id: 8191,
+                        title: "Management",
+                        location: 'Madrid',
+                        price: 114.99,
+                        image: "images/management.webp",
+                        availableInventory: 5,
+                        orderedQuantity: 0,
+                        rating: 101,
+                        stars: 5,
+                    },
+                    {
+                        id: 8192,
+                        title: "Accountings",
+                        location: 'Rome',
+                        price: 89.99,
+                        image: "images/accounting.webp",
+                        availableInventory: 5,
+                        orderedQuantity: 0,
+                        rating: 121,
                         stars: 4,
                     },
                 ],
@@ -553,10 +581,10 @@
                 shakeKeyPhone: 0,
                 shakeKey: 0,
                 states: {
-                    AL: "Alabama",
-                    AR: "Arizona",
-                    CA: "California",
-                    NV: "Nevada"
+                    DXB: "Dubai",
+                    SJ: "Sharjah",
+                    AD: "Abu Dhabi",
+                    AM: "Ajman"
                 },
                 sortBy: '',
                 sortOrder: 'asc',

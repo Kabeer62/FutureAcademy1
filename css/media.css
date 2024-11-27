@@ -181,11 +181,11 @@
         background-color: rgb(255, 208, 0);
         color: black;
         margin-top: -16.2rem;
-        margin-left: -5rem;
+        margin-left: -4rem;
         font-size: 16px;
         cursor: pointer;
         transition: transform 0.5s ease, box-shadow 0.5s ease;
-        transform-style: preserve-3d;
+        transform-style: none;
     }
     #cart-section{
         width: 83%;
@@ -229,10 +229,19 @@
         margin-left: 3rem;
         cursor: pointer;
     }
+    .add-button {
+        background-color: #edc431;
+        color: #333;
+        border: 0.1px dashed #9e9e9e;
+        padding: 10px 90px;
+        margin-left: -0.9rem;
+        font-size: 14px;
+        cursor: pointer;
+    }
     #cart-section .title1 {
         width: 90%;
         font-family: 'Montserrat';
-        align-items: center;
+        margin-right: -10rem;
     }
     .cart-product-figure {
         width: 30%;
@@ -242,7 +251,9 @@
         width: 100%;
     }
     .back-to-shop-btn {
-        margin-right: 0;
+        margin-top: -2rem;
+        margin-bottom: 2rem;
+        margin-right: 2rem;
     }
     #price-overview {
         border-radius: 20px;
@@ -304,12 +315,12 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr); /* 2 products per row */
         grid-gap: 0rem;
-        margin-left: -0.5rem;
+        margin-left: 0.6rem;
     }
 
     .product-item {
         width: 100%;
-        max-width: none;
+        max-width: 200px;
         border-radius: 8px;
         padding: 10px;
     }
@@ -327,7 +338,7 @@
         width: 44px;
         height: 38px;
         background-color: rgba(186, 186, 186, 0.552);
-        margin-left: 9.5rem;
+        margin-left: 8rem;
     }
 
     #creater .creater-box img {
