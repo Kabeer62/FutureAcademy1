@@ -52,10 +52,9 @@ html {
     padding: 0.2vw 6vw;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 }
-
-nav img {
-    width: 120px;
-    cursor: pointer;
+nav figure {
+    background-color: transparent !important; /* Remove any background color */
+    box-shadow: none; /* Remove shadow if present */
 }
 
 nav .navigation{
@@ -254,7 +253,7 @@ nav .navigation ul li a.active {
 
 #home {
     background-image: linear-gradient(rgba(9, 5, 54, 0.3), rgba(5, 4, 46, 0.7)),
-    url(../images/backgroundimage.jpg);
+    url('https://futureacademybackend.onrender.com/images/backgroundimage.jpg');
     margin-top: 3rem;
     width: 100%;
     height: 100vh;
@@ -901,7 +900,7 @@ footer .subscribe a.courses:hover {
 }
 
 .cart-product-img {
-    width: 100px;
+    width: 150px;
     height: 100px;
     margin: 0;
 }

@@ -25,7 +25,10 @@
         <header>
             <!-- NavBar -->
             <nav v-show="showNavBar">
-                <img src="./images/logo1.png" alt="">
+                <figure>
+                    <img v-bind:src="imageLink(school.logo)" alt=""
+                        style="width: 120px; height: 100px; background-color: none;" />
+                </figure>
                 <div class="navigation">
 
                     <div id="search-box">
@@ -45,7 +48,7 @@
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
-                    <img id="menu-btn" src="images/menu1.jpg" alt="">
+                    <img id="menu-btn" :src="imageLink('images/menu1.jpg')" alt="">
                 </div>
             </nav>
             <div @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
@@ -72,7 +75,9 @@
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
                 <div class="about-profile">
-                    <img src="images/profile1.jpg" alt="">
+                    <img :src="imageLink('images/profile1.jpg')" alt="Profile Picture"
+                        @mouseover="showProfileMessage = true" @mouseleave="showProfileMessage = false"
+                        id="profile-image" />
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
                         equips students with practical skills and knowledge for their future careers.</p>
@@ -137,7 +142,7 @@
                             </div>
                         </div>
 
-                        <figure @click="openImageModal(product.image)">
+                        <figure @click="openImageModal(imageLink(product.image))">
                             <img :src="imageLink(product.image)" alt="Product image">
                         </figure>
                         <section id="modules">
@@ -184,7 +189,7 @@
                         and this website is part of a project for my course</p>
                     <div class="creater-box">
                         <div class="profile">
-                            <img src="images/profile1.jpg" alt="">
+                            <img :src="imageLink('images/profile1.jpg')" alt="">
                             <h6>Kabeer Kumar</h6>
                             <p>HTML Websites Creater</p>
                             <div class="pro-links">
@@ -207,8 +212,9 @@
                     <div>
                         <div v-for="item in cartItems" :key="item.id" class="cart-product">
                             <figure class="cart-product-figure">
-                                <img :src="item.image" class="cart-product-img" alt="Product image">
-                            </figure>
+                                <!-- Bind the src attribute dynamically using imageLink -->
+                                <img :src="imageLink(item.image)" class="cart-product-img" alt="Product image">
+                              </figure>
                             <div class="cart-product-info">
                                 <h2 class="cart-product-title">{{ item.title }}</h2>
                                 <p class="cart-product-location">{{ item.location }}</p>
@@ -222,7 +228,8 @@
                                             :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
-                                    <p v-on:click="removeFromCart(item)" class="remove"><i class="fa-solid fa-trash"></i>
+                                    <p v-on:click="removeFromCart(item)" class="remove"><i
+                                            class="fa-solid fa-trash"></i>
                                 </div>
                                 </p>
                             </div>
@@ -315,7 +322,7 @@
 
                     <div id="billing-information">
                         <figure class="receipt-figure">
-                            <img v-bind:src="school.logo" class="receipt-img">
+                            <img v-bind:src="imageLink(school.logo)" alt="">
                         </figure>
                         <h4>Bill Overview</h4>
                         <hr class="receipt-line">
@@ -344,13 +351,19 @@
                             <p class="bill-answer">{{ order.method }}</p>
                         </span>
                         <hr class="receipt-line">
-                        <span class="receipt-span"><p class="bill-label">Product:</p><p class="bill-answer">Amount</p></span>
+                        <span class="receipt-span">
+                            <p class="bill-label">Product:</p>
+                            <p class="bill-answer">Amount</p>
+                        </span>
                         <span v-for="item in cartItems" :key="item.id" class="receipt-span">
                             <p class="bill-label">{{ item.title }} - {{item.orderedQuantity}}</p>
                             <p class="bill-answer">${{ (item.price * item.orderedQuantity).toFixed(2) }}</p>
                         </span>
                         <hr class="receipt-line">
-                        <span class="receipt-span"><p class="bill-label">Total:</p><p class="bill-answer">${{ cartSubtotal.toFixed(2)}}</p></span>
+                        <span class="receipt-span">
+                            <p class="bill-label">Total:</p>
+                            <p class="bill-answer">${{ cartSubtotal.toFixed(2)}}</p>
+                        </span>
                     </div>
                 </section>
             </div>
@@ -651,6 +664,10 @@
                     this.showSortSection = true;
                 },
 
+                imageLink(image) {
+                    return `https://futureacademybackend.onrender.com/${image}`;
+                },
+
                 addToCart: function (product) {
                     if (product.availableInventory > 0) {
                         let cartProduct = this.cart.find(item => item.id === product.id);
@@ -734,16 +751,16 @@
                     this.showCartButton = false;
                     this.showThankYouPage = false;
                 },
-        //         fetchData() {
-        //   fetch("https://futureacademybackend.onrender.com/collection/products")
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //       this.classes = data;
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error fetching classes:", error);
-        //     });
-        // },
+                //         fetchData() {
+                //   fetch("https://futureacademybackend.onrender.com/collection/products")
+                //     .then((response) => response.json())
+                //     .then((data) => {
+                //       this.classes = data;
+                //     })
+                //     .catch((error) => {
+                //       console.error("Error fetching classes:", error);
+                //     });
+                // },
 
             },
 
@@ -848,10 +865,6 @@
                     return sortedArray;
                 },
             },
-            imageLink(image) {
-						return `https://futureacademybackend.onrender.com/${image}`;
-					},
-
         });
         $('#menu-btn').click(function () {
             $('nav .navigation ul').addClass('active')
