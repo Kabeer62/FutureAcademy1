@@ -25,7 +25,7 @@
         <header>
             <!-- NavBar -->
             <nav v-show="showNavBar">
-                <img src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image">
+                <img src="./images/logo1.png" alt="">
                 <div class="navigation">
 
                     <div id="search-box">
@@ -45,7 +45,7 @@
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
-                    <img id="menu-btn" src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image">
+                    <img id="menu-btn" src="images/menu1.jpg" alt="">
                 </div>
             </nav>
             <div @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
@@ -72,7 +72,7 @@
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
                 <div class="about-profile">
-                    <img src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image">
+                    <img src="images/profile1.jpg" alt="">
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
                         equips students with practical skills and knowledge for their future careers.</p>
@@ -133,12 +133,12 @@
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
-                                <img src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image" class="modal-image">
+                                <img :src="currentImage" alt="Product image" class="modal-image">
                             </div>
                         </div>
 
                         <figure @click="openImageModal(product.image)">
-                            <img src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image">
+                            <img :src="imageLink(product.image)" alt="Product image">
                         </figure>
                         <section id="modules">
                             <h2 class="product-item">{{ product.title }}</h2>
@@ -184,7 +184,7 @@
                         and this website is part of a project for my course</p>
                     <div class="creater-box">
                         <div class="profile">
-                            <img src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image">
+                            <img src="images/profile1.jpg" alt="">
                             <h6>Kabeer Kumar</h6>
                             <p>HTML Websites Creater</p>
                             <div class="pro-links">
@@ -207,7 +207,7 @@
                     <div>
                         <div v-for="item in cartItems" :key="item.id" class="cart-product">
                             <figure class="cart-product-figure">
-                                <img src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image" class="cart-product-img">
+                                <img :src="item.image" class="cart-product-img" alt="Product image">
                             </figure>
                             <div class="cart-product-info">
                                 <h2 class="cart-product-title">{{ item.title }}</h2>
@@ -315,7 +315,7 @@
 
                     <div id="billing-information">
                         <figure class="receipt-figure">
-                            <img v-bind src="https://futureacademybackend.onrender.com/images/python.webp" alt="Subject Image">
+                            <img v-bind:src="school.logo" class="receipt-img">
                         </figure>
                         <h4>Bill Overview</h4>
                         <hr class="receipt-line">
@@ -763,11 +763,6 @@
                         this.shakeKey++; // Triggers re-animation
                     }
                 },
-                imageLink(image) {
-    return image 
-        ? `https://futureacademybackend.onrender.com/${image}`
-        : 'https://via.placeholder.com/150'; // Fallback placeholder image
-}
             },
 
             computed: {
@@ -851,19 +846,11 @@
                     }
 
                     return sortedArray;
-                }
-                
+                },
             },
-            mounted() {
-        fetch('https://futureacademybackend.onrender.com/collection/products')
-            .then((response) => response.json())
-            .then((data) => {
-                this.products = data;
-            })
-            .catch((error) => {
-                console.error('Error fetching products:', error);
-            });
-    }
+            imageLink(image) {
+						return `https://futureacademybackend.onrender.com/${image}`;
+					},
 
         });
         $('#menu-btn').click(function () {
