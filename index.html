@@ -763,6 +763,10 @@
                         this.shakeKey++; // Triggers re-animation
                     }
                 },
+                imageLink(image) {
+						return `https://futureacademybackend.onrender.com/${image}`;
+
+            }
             },
 
             computed: {
@@ -846,11 +850,8 @@
                     }
 
                     return sortedArray;
-                },
-                imageLink(image) {
-						return `https://futureacademybackend.onrender.com/${image}`;
-
-            }
+                }
+                
             },
             mounted() {
         fetch('https://futureacademybackend.onrender.com/collection/products')
