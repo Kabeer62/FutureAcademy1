@@ -441,141 +441,7 @@
                     logo: 'images/logo1.png'
                 },
 
-                products: [
-                    {
-                        id: 8181,
-                        title: "Python",
-                        location: 'Dubai',
-                        price: 20.99,
-                        image: "images/python.webp",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 239,
-                        stars: 5,
-
-                    },
-                    {
-                        id: 8182,
-                        title: "AI",
-                        location: 'California',
-                        price: 80.99,
-                        image: "images/AI.jpg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 220,
-                        stars: 5,
-                    },
-                    {
-                        id: 8183,
-                        title: "HTML",
-                        location: 'NewYork',
-                        price: 169.99,
-                        image: "images/htmlcssjava.jpg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 239,
-                        stars: 5,
-                    },
-                    {
-                        id: 8184,
-                        title: "C++",
-                        location: 'Portugal',
-                        price: 59.99,
-                        image: "images/C++.png",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 82,
-                        stars: 5,
-                    },
-                    {
-                        id: 8185,
-                        title: "JAVA",
-                        location: 'Paris',
-                        price: 110.99,
-                        image: "images/java.jpeg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 145,
-                        stars: 4,
-                    },
-                    {
-                        id: 8186,
-                        title: "Operating System",
-                        location: 'Spain',
-                        price: 80.99,
-                        image: "images/operatingsystem.jpg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 121,
-                        stars: 4,
-                    },
-                    {
-                        id: 8187,
-                        title: "Math",
-                        location: 'Pakistan',
-                        price: 110.99,
-                        image: "images/math.jpeg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 201,
-                        stars: 5,
-                    },
-                    {
-                        id: 8188,
-                        title: "Ethical Hacking",
-                        location: 'Russia',
-                        price: 165.99,
-                        image: "images/Ethicalhacking.png",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 211,
-                        stars: 5,
-                    },
-                    {
-                        id: 8189,
-                        title: "Cyber Security",
-                        location: 'Canada',
-                        price: 190.99,
-                        image: "images/cybersecurity.jpeg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 176,
-                        stars: 4,
-                    },
-                    {
-                        id: 8190,
-                        title: "Video Editing",
-                        location: 'Austrailia',
-                        price: 99.99,
-                        image: "images/VE.jpg",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 129,
-                        stars: 4,
-                    },
-                    {
-                        id: 8191,
-                        title: "Management",
-                        location: 'Madrid',
-                        price: 114.99,
-                        image: "images/management.webp",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 101,
-                        stars: 5,
-                    },
-                    {
-                        id: 8192,
-                        title: "Accountings",
-                        location: 'Rome',
-                        price: 89.99,
-                        image: "images/accounting.webp",
-                        availableInventory: 5,
-                        orderedQuantity: 0,
-                        rating: 121,
-                        stars: 4,
-                    },
-                ],
+                products: [],
                 cart: [],
                 showThankYouPage: false,
                 order: {
@@ -819,6 +685,27 @@
                             });
                     });
                 },
+                getProducts(){
+                    fetch('https://futureacademybackend.onrender.com/collection/products', {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => response.json())
+                        .then((data) => {
+                            this.products = data.map((item) => ({
+                                ...item,
+                                _id: String(item._id),
+                            }));
+						})
+                        .catch((error) => {
+                            alert(error);
+                        });
+                }
+            },
+            created(){
+                this.getProducts;
             },
 
             watch: {
