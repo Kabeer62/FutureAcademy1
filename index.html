@@ -694,9 +694,9 @@
                         })
                         .then(response => response.json())
                         .then((data) => {
-                            this.products = data.map((item) => ({
-                                ...item,
-                                _id: String(item._id),
+                            this.products = data.map((product) => ({
+                                ...product,
+                                _id: String(product._id),
                             }));
 						})
                         .catch((error) => {
