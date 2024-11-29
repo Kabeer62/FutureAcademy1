@@ -611,22 +611,22 @@
                             alert(error);
                         });
 
-                    this.cartItems.array.array.forEach(product => {
-                        const newSpaces = { availableInventory: this.product.availableInventory };
-                        fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
-                            method: 'PUT', // set the HTTP method as 'POST'
-                            headers: {
-                                'Content-Type': 'application/json', // set the data type as JSON
-                            },
-                            body: JSON.stringify(newSpaces), // need to stringify the JSON object
+                        this.cartItems.forEach(product => {
+                        const newAvailability = { availableInventory: product.availableInventory }; // Use correct `subject`
+                        fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newAvailability),
                         })
-                            .then(response => response.json())
-                            .then(responseJSON => {
-                                alert(JSON.stringify(responseJSON));
-                            })
-                            .catch((error) => {
-                                alert(error);
-                            });
+                        .then(response => response.json())
+                        .then(data => {
+                            // Update local subjects array if necessary
+                            const updatedProducts = this.products.find(s => s._id === product._id);
+                            if (updatedProducts) updatedProducts.availableInventory = data.availableInventory;
+                        })
+                        .catch(error => {
+                            alert(error);
+                        });
                     });
                     alert("Order submitted!");
                     this.showThankYouPage = true;
@@ -657,39 +657,6 @@
                     this.showCartButton = false;
                     this.showThankYouPage = false;
                 },
-
-
-                // updateSpaces() {
-                //     // Loop through unique cart items
-                //     this.cartItems.forEach((item) => {
-                //         // Calculate the remaining spaces
-                //         const spacesLeft = item.spaces - this.orderedQuantity(item._id);
-
-                //         // Prepare the payload for updating spaces
-                //         const updatedProducts = { spaces: spacesLeft };
-
-                //         // Send the PUT request to update the product
-                //         fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
-                //             method: "PUT",
-                //             headers: {
-                //                 "Content-Type": "application/json",
-                //             },
-                //             body: JSON.stringify(updatedProducts),
-                //         })
-                //             .then((response) => response.json())
-                //             .then((responseJSON) => {
-                //                 if (responseJSON.msg === "success") {
-                //                     console.log(`Updated spaces for product: ${item._id}`);
-                //                 } else {
-                //                     console.error(`Failed to update spaces for product: ${item._id}`);
-                //                 }
-                //             })
-                //             .catch((error) => {
-                //                 console.error("Error updating product:", error);
-                //             });
-                //     });
-                // },
-
             },
 
             watch: {
