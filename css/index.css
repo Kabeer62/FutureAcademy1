@@ -1,4 +1,4 @@
-* {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -673,9 +673,8 @@ button {
 
 /* Register */
 #register {
+    background: linear-gradient(135deg, #a2bcdd, #00d5ff57);
     padding: 6vw 8vw 6vw 8vw;
-    background-image: linear-gradient(rgba(99, 112, 168, 0.5), rgba(81, 91, 233, 0.5)),
-        url(Images/IT-background.webp);
     width: 100%;
     height: 92vh;
     background-size: cover;

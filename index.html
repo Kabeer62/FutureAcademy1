@@ -15,7 +15,6 @@
 
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/media.css">
-    <script src="server.js" defer></script>
 </head>
 
 <body>
@@ -26,7 +25,7 @@
             <!-- NavBar -->
             <nav v-show="showNavBar">
                 <figure>
-                    <img v-bind:src="imageLink(school.logo)" alt=""
+                    <img v-bind:src="imageLink(school.logo)" alt="logo"
                         style="width: 120px; height: 100px; background-color: none;" />
                 </figure>
                 <div class="navigation">
@@ -48,7 +47,7 @@
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
-                    <img id="menu-btn" :src="imageLink('images/menu1.jpg')" alt="">
+                    <img id="menu-btn" :src="imageLink('images/menu1.jpg')" alt="menu-btn">
                 </div>
             </nav>
             <div @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
@@ -134,7 +133,8 @@
 
                 <h1 id="title" v-if="sortedFilteredProducts.length > 0" v-text="sitename"></h1>
                 <section id="products-section">
-                    <div v-for="product in sortedFilteredProducts" :key="product.id" class="product-item">
+                    <div v-for="(product, index) in sortedFilteredProducts" :key="'product-' + product.id + '-' + index"
+                        class="product-item">
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
@@ -210,11 +210,12 @@
                         Shop</button>
                     <h2 class="title1">Your Cart <i class="fa-solid fa-cart-shopping"></i></h2>
                     <div>
-                        <div v-for="item in cartItems" :key="item.id" class="cart-product">
+                        <div v-for="(item, index) in cartItems" :key="'cart-' + item.id + '-' + index"
+                            class="cart-product">
                             <figure class="cart-product-figure">
                                 <!-- Bind the src attribute dynamically using imageLink -->
                                 <img :src="imageLink(item.image)" class="cart-product-img" alt="Product image">
-                              </figure>
+                            </figure>
                             <div class="cart-product-info">
                                 <h2 class="cart-product-title">{{ item.title }}</h2>
                                 <p class="cart-product-location">{{ item.location }}</p>
@@ -271,17 +272,20 @@
                         <h3 class="title">Checkout Form <i class="fa-solid fa-bag-shopping"></i></h3>
                         <h4>Billing Address</h4>
                         <!-- First Name Input with Shake Animation -->
+                        <!-- First Name Input with Shake Animation -->
                         <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text"
                             placeholder="First Name" :class="{'invalid-input': order.firstName && !isFirstNameValid}"
-                            class="form-input">
+                            class="form-input" />
                         <p v-if="order.firstName && !isFirstNameValid" class="error">
-                            First name must contain only letters.</p>
+                            First name must contain only letters.
+                        </p>
 
                         <!-- Last Name Input with Shake Animation -->
                         <input v-model.trim="order.lastName" :key="shakeKeyLastName" type="text" placeholder="Last Name"
-                            :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input">
+                            :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input" />
                         <p v-if="order.lastName && !isLastNameValid" class="error">
-                            Last name must contain only letters.</p>
+                            Last name must contain only letters.
+                        </p>
 
                         <!-- Email Input with Shake Animation -->
                         <input v-model.trim="order.email" :key="shakeKeyEmail" type="email" placeholder="Email Address"
@@ -588,10 +592,10 @@
                     method: 'Home',
                 },
                 // Key to reset first name, last name, and phone number animation
-                shakeKeyFirstName: 0,
-                shakeKeyLastName: 0,
-                shakeKeyEmail: 0,
-                shakeKeyPhone: 0,
+                shakeKeyFirstName: 1,
+                shakeKeyLastName: 2,
+                shakeKeyEmail: 3,
+                shakeKeyPhone: 4,
                 shakeKey: 0,
                 states: {
                     DXB: "Dubai",
@@ -668,19 +672,20 @@
                     return `https://futureacademybackend.onrender.com/${image}`;
                 },
 
-                addToCart: function (product) {
+                addToCart(product) {
                     if (product.availableInventory > 0) {
-                        let cartProduct = this.cart.find(item => item.id === product.id);
+                        const cartProduct = this.cart.find(item => item.id === product.id);
 
                         if (cartProduct) {
-                            cartProduct.orderedQuantity++; // Update cart quantity
+                            // Increment quantity if the product is already in the cart
+                            cartProduct.orderedQuantity++;
                         } else {
-                            // Push the actual reference of the product, not a shallow copy
-                            this.cart.push(product);
-                            product.orderedQuantity = 1; // Initialize in the product
+                            // Add the product to the cart with an initial quantity
+                            this.cart.push({ ...product, orderedQuantity: 1 });
                         }
 
-                        product.availableInventory--; // Decrement inventory in the original product reference
+                        // Decrement the available inventory
+                        product.availableInventory--;
                         this.showCartButton = true;
                     } else {
                         alert("Product is out of stock!");
@@ -751,36 +756,89 @@
                     this.showCartButton = false;
                     this.showThankYouPage = false;
                 },
-                //         fetchData() {
-                //   fetch("https://futureacademybackend.onrender.com/collection/products")
-                //     .then((response) => response.json())
-                //     .then((data) => {
-                //       this.classes = data;
-                //     })
-                //     .catch((error) => {
-                //       console.error("Error fetching classes:", error);
-                //     });
-                // },
 
+                //===============================================\\
+                submitForm() {
+						// Create the new order object
+						const newOrder = {
+							order: this.order,
+							cart: this.cartItems,
+						};
+
+						// Submit the order
+						fetch("https://futureacademybackend.onrender.com/collection/orders", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify(newOrder),
+						})
+							.then((response) => response.json())
+							.then((responseJSON) => {
+								// Notify the user
+								alert("Order submitted successfully!");
+
+								// Update spaces for each unique item in the cart
+								this.updateSpaces();
+							})
+							.catch((error) => {
+								console.error("Error submitting order:", error);
+							});
+					},
+					updateSpaces() {
+						// Loop through unique cart items
+						this.cartItems.forEach((item) => {
+							// Calculate the remaining spaces
+							const spacesLeft = item.spaces - this.orderedQuantity(item._id);
+
+							// Prepare the payload for updating spaces
+							const updatedProducts = { spaces: spacesLeft };
+
+							// Send the PUT request to update the product
+							fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
+								method: "PUT",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								body: JSON.stringify(updatedProducts),
+							})
+								.then((response) => response.json())
+								.then((responseJSON) => {
+									if (responseJSON.msg === "success") {
+										console.log(`Updated spaces for product: ${item._id}`);
+									} else {
+										console.error(`Failed to update spaces for product: ${item._id}`);
+									}
+								})
+								.catch((error) => {
+									console.error("Error updating product:", error);
+								});
+						});
+					},
             },
 
             watch: {
-                'order.firstName'(newVal) {
-                    if (!this.isFirstNameValid && newVal) {
-                        this.shakeKeyFirstName++; // Trigger re-animation for first name
-                    }
-                },
-                'order.lastName'(newVal) {
-                    if (!this.isLastNameValid && newVal) {
-                        this.shakeKeyLastName++; // Trigger re-animation for last name
-                    }
-                },
-                'order.phone'(newVal) {
-                    if (!this.isPhoneValid && newVal) {
-                        this.shakeKey++; // Triggers re-animation
-                    }
-                },
-            },
+    'order.firstName'(newVal) {
+        if (!this.isFirstNameValid && newVal) {
+            this.shakeKeyFirstName++; // Increment to trigger a re-render
+        }
+    },
+    'order.lastName'(newVal) {
+        if (!this.isLastNameValid && newVal) {
+            this.shakeKeyLastName++; // Increment to trigger a re-render
+        }
+    },
+    'order.email'(newVal) {
+        if (!this.isEmailValid && newVal) {
+            this.shakeKeyEmail++; // Increment to trigger a re-render
+        }
+    },
+    'order.phone'(newVal) {
+        if (!this.isPhoneValid && newVal) {
+            this.shakeKeyPhone++; // Increment to trigger a re-render
+        }
+    },
+},
 
             computed: {
                 cartItemCount: function () {
@@ -789,7 +847,10 @@
                     }, 0) || "";
                 },
                 cartItems() {
-                    return this.cart;
+                    return this.cart.filter((item, index, self) =>
+                        index === self.findIndex(t => t.id === item.id)
+                    );
+                    console.log("Cart IDs:", this.cart.map(item => item.id));
                 },
                 cartSubtotal() {
                     return this.cart.reduce((total, item) => {
@@ -863,6 +924,7 @@
                     }
 
                     return sortedArray;
+                    console.log("Sorted Products IDs:", this.sortedFilteredProducts.map(product => product.id));
                 },
             },
         });
