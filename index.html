@@ -133,7 +133,7 @@
 
                 <h1 id="title" v-if="sortedFilteredProducts.length > 0" v-text="sitename"></h1>
                 <section id="products-section">
-                    <div v-for="(product, index) in sortedFilteredProducts" :key="'product-' + product.id + '-' + index"
+                    <div v-for="product in products" :key="product.id"
                         class="product-item">
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
@@ -594,6 +594,24 @@
                 },
 
                 submitForm1() {
+                    const newOrder = this.order;
+
+        // set the url to your server and route
+        fetch("https://futureacademybackend.onrender.com/collection/orders", {
+            method: 'POST', // set the HTTP method as 'POST'
+            headers: {
+                'Content-Type': 'application/json', // set the data type as JSON
+            },
+            body: JSON.stringify(newOrder), // need to stringify the JSON object
+        })
+            .then(response => response.json())
+            .then(responseJSON => {
+                document.getElementById('response').innerText = JSON.stringify(responseJSON);
+            })
+            .catch((error) => {
+                document.getElementById('error').innerText = error;
+            });
+
                     alert("Order submitted!");
                     this.showThankYouPage = true;
                     this.showNavBar = false;
@@ -624,88 +642,68 @@
                 },
 
                 //===============================================\\
-                submitOrder() {
-                    const newOrder = {
-                        order: this.order,
-                        cart: this.cartItems,
-                    };
+                // submitOrder() {
+                //     const newOrder = {
+                //         order: this.order,
+                //         cart: this.cartItems,
+                //     };
 
-                    console.log("Submitting order:", newOrder); // Debugging payload
+                //     console.log("Submitting order:", newOrder); // Debugging payload
 
-                    fetch("https://futureacademybackend.onrender.com/collection/orders", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(newOrder),
-                    })
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error(`Failed to submit order. Status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then((data) => {
-                            console.log("Order response from backend:", data); // Debug response
-                            alert("Order submitted successfully!");
-                            this.cart = []; // Clear the cart after submission
-                        })
-                        .catch((error) => {
-                            console.error("Error submitting order:", error);
-                            alert("Failed to place the order. Please try again.");
-                        });
-                },
-                updateSpaces() {
-                    // Loop through unique cart items
-                    this.cartItems.forEach((item) => {
-                        // Calculate the remaining spaces
-                        const spacesLeft = item.spaces - this.orderedQuantity(item._id);
+                //     fetch("https://futureacademybackend.onrender.com/collection/orders", {
+                //         method: "POST",
+                //         headers: {
+                //             "Content-Type": "application/json",
+                //         },
+                //         body: JSON.stringify(newOrder),
+                //     })
+                //         .then((response) => {
+                //             if (!response.ok) {
+                //                 throw new Error(`Failed to submit order. Status: ${response.status}`);
+                //             }
+                //             return response.json();
+                //         })
+                //         .then((data) => {
+                //             console.log("Order response from backend:", data); // Debug response
+                //             alert("Order submitted successfully!");
+                //             this.cart = []; // Clear the cart after submission
+                //         })
+                //         .catch((error) => {
+                //             console.error("Error submitting order:", error);
+                //             alert("Failed to place the order. Please try again.");
+                //         });
+                // },
+                // updateSpaces() {
+                //     // Loop through unique cart items
+                //     this.cartItems.forEach((item) => {
+                //         // Calculate the remaining spaces
+                //         const spacesLeft = item.spaces - this.orderedQuantity(item._id);
 
-                        // Prepare the payload for updating spaces
-                        const updatedProducts = { spaces: spacesLeft };
+                //         // Prepare the payload for updating spaces
+                //         const updatedProducts = { spaces: spacesLeft };
 
-                        // Send the PUT request to update the product
-                        fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(updatedProducts),
-                        })
-                            .then((response) => response.json())
-                            .then((responseJSON) => {
-                                if (responseJSON.msg === "success") {
-                                    console.log(`Updated spaces for product: ${item._id}`);
-                                } else {
-                                    console.error(`Failed to update spaces for product: ${item._id}`);
-                                }
-                            })
-                            .catch((error) => {
-                                console.error("Error updating product:", error);
-                            });
-                    });
-                },
-                getProducts(){
-                    fetch('https://futureacademybackend.onrender.com/collection/products', {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                        })
-                        .then(response => response.json())
-                        .then((data) => {
-                            this.products = data.map((product) => ({
-                                ...product,
-                                _id: String(product._id),
-                            }));
-						})
-                        .catch((error) => {
-                            alert(error);
-                        });
-                }
-            },
-            created(){
-                this.getProducts;
+                //         // Send the PUT request to update the product
+                //         fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
+                //             method: "PUT",
+                //             headers: {
+                //                 "Content-Type": "application/json",
+                //             },
+                //             body: JSON.stringify(updatedProducts),
+                //         })
+                //             .then((response) => response.json())
+                //             .then((responseJSON) => {
+                //                 if (responseJSON.msg === "success") {
+                //                     console.log(`Updated spaces for product: ${item._id}`);
+                //                 } else {
+                //                     console.error(`Failed to update spaces for product: ${item._id}`);
+                //                 }
+                //             })
+                //             .catch((error) => {
+                //                 console.error("Error updating product:", error);
+                //             });
+                //     });
+                // },
+            
             },
 
             watch: {
@@ -729,6 +727,22 @@
                         this.shakeKeyPhone++; // Increment to trigger a re-render
                     }
                 },
+            },
+            created: function(){
+                fetch('https://futureacademybackend.onrender.com/collection/products', {
+                        method: 'GET', // set the HTTP method as 'GET'
+                        headers: {
+                            'Content-Type': 'application/json', // set the data type as JSON
+                        },
+                        // body: JSON.stringify(newProduct), // need to stringify the JSON object
+                    })
+                        .then(response => response.json())
+                        .then(responseJSON => {
+                            this.products=responseJSON;
+                        })
+                        .catch((error) => {
+                            alert(error);
+                        });
             },
 
             computed: {
@@ -818,6 +832,7 @@
                     console.log("Sorted Products IDs:", this.sortedFilteredProducts.map(product => product.id));
                 },
             },
+            
         });
         $('#menu-btn').click(function () {
             $('nav .navigation ul').addClass('active')
