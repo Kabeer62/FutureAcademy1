@@ -759,86 +759,90 @@
 
                 //===============================================\\
                 submitOrder() {
-    const newOrder = {
-        customer: this.order, // Form data
-        cart: this.cartItems, // Cart items
-        total: this.cartSubtotal, // Total price
-        date: new Date(), // Order date
-    };
-    console.log("Order payload:", newOrder);
+                    const newOrder = {
+                        order: this.order,
+                        cart: this.cartItems,
+                    };
 
-    fetch("https://futureacademybackend.onrender.com/collection/orders", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newOrder),
-    })
-        .then((response) => response.json())
-        .then((responseJSON) => {
-            alert("Order submitted successfully!");
-            this.updateSpaces();
-        })
-        .catch((error) => {
-    console.error("Error submitting order:", error);
-    alert("Failed to place the order. Please try again.");
-});
-        
-},
-					updateSpaces() {
-						// Loop through unique cart items
-						this.cartItems.forEach((item) => {
-							// Calculate the remaining spaces
-							const spacesLeft = item.spaces - this.orderedQuantity(item._id);
+                    console.log("Submitting order:", newOrder); // Debugging payload
 
-							// Prepare the payload for updating spaces
-							const updatedProducts = { spaces: spacesLeft };
+                    fetch("https://futureacademybackend.onrender.com/collection/orders", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(newOrder),
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to submit order. Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            console.log("Order response from backend:", data); // Debug response
+                            alert("Order submitted successfully!");
+                            this.cart = []; // Clear the cart after submission
+                        })
+                        .catch((error) => {
+                            console.error("Error submitting order:", error);
+                            alert("Failed to place the order. Please try again.");
+                        });
+                },
+                updateSpaces() {
+                    // Loop through unique cart items
+                    this.cartItems.forEach((item) => {
+                        // Calculate the remaining spaces
+                        const spacesLeft = item.spaces - this.orderedQuantity(item._id);
 
-							// Send the PUT request to update the product
-							fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
-								method: "PUT",
-								headers: {
-									"Content-Type": "application/json",
-								},
-								body: JSON.stringify(updatedProducts),
-							})
-								.then((response) => response.json())
-								.then((responseJSON) => {
-									if (responseJSON.msg === "success") {
-										console.log(`Updated spaces for product: ${item._id}`);
-									} else {
-										console.error(`Failed to update spaces for product: ${item._id}`);
-									}
-								})
-								.catch((error) => {
-									console.error("Error updating product:", error);
-								});
-						});
-					},
+                        // Prepare the payload for updating spaces
+                        const updatedProducts = { spaces: spacesLeft };
+
+                        // Send the PUT request to update the product
+                        fetch(`https://futureacademybackend.onrender.com/collection/products/${item._id}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(updatedProducts),
+                        })
+                            .then((response) => response.json())
+                            .then((responseJSON) => {
+                                if (responseJSON.msg === "success") {
+                                    console.log(`Updated spaces for product: ${item._id}`);
+                                } else {
+                                    console.error(`Failed to update spaces for product: ${item._id}`);
+                                }
+                            })
+                            .catch((error) => {
+                                console.error("Error updating product:", error);
+                            });
+                    });
+                },
             },
 
             watch: {
-    'order.firstName'(newVal) {
-        if (!this.isFirstNameValid && newVal) {
-            this.shakeKeyFirstName++; // Increment to trigger a re-render
-        }
-    },
-    'order.lastName'(newVal) {
-        if (!this.isLastNameValid && newVal) {
-            this.shakeKeyLastName++; // Increment to trigger a re-render
-        }
-    },
-    'order.email'(newVal) {
-        if (!this.isEmailValid && newVal) {
-            this.shakeKeyEmail++; // Increment to trigger a re-render
-        }
-    },
-    'order.phone'(newVal) {
-        if (!this.isPhoneValid && newVal) {
-            this.shakeKeyPhone++; // Increment to trigger a re-render
-        }
-    },
-},
+                'order.firstName'(newVal) {
+                    if (!this.isFirstNameValid && newVal) {
+                        this.shakeKeyFirstName++; // Increment to trigger a re-render
+                    }
+                },
+                'order.lastName'(newVal) {
+                    if (!this.isLastNameValid && newVal) {
+                        this.shakeKeyLastName++; // Increment to trigger a re-render
+                    }
+                },
+                'order.email'(newVal) {
+                    if (!this.isEmailValid && newVal) {
+                        this.shakeKeyEmail++; // Increment to trigger a re-render
+                    }
+                },
+                'order.phone'(newVal) {
+                    if (!this.isPhoneValid && newVal) {
+                        this.shakeKeyPhone++; // Increment to trigger a re-render
+                    }
+                },
+            },
 
             computed: {
                 cartItemCount: function () {
