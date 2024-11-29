@@ -133,8 +133,7 @@
 
                 <h1 id="title" v-if="sortedFilteredProducts.length > 0" v-text="sitename"></h1>
                 <section id="products-section">
-                    <div v-for="product in products" :key="product.id"
-                        class="product-item">
+                    <div v-for="product in products" :key="product.id" class="product-item">
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
@@ -596,21 +595,21 @@
                 submitForm1() {
                     const newOrder = this.order;
 
-        // set the url to your server and route
-        fetch("https://futureacademybackend.onrender.com/collection/orders", {
-            method: 'POST', // set the HTTP method as 'POST'
-            headers: {
-                'Content-Type': 'application/json', // set the data type as JSON
-            },
-            body: JSON.stringify(newOrder), // need to stringify the JSON object
-        })
-            .then(response => response.json())
-            .then(responseJSON => {
-                document.getElementById('response').innerText = JSON.stringify(responseJSON);
-            })
-            .catch((error) => {
-                document.getElementById('error').innerText = error;
-            });
+                    // set the url to your server and route
+                    fetch("https://futureacademybackend.onrender.com/collection/orders", {
+                        method: 'POST', // set the HTTP method as 'POST'
+                        headers: {
+                            'Content-Type': 'application/json', // set the data type as JSON
+                        },
+                        body: JSON.stringify(newOrder), // need to stringify the JSON object
+                    })
+                        .then(response => response.json())
+                        .then(responseJSON => {
+                            document.getElementById('response').innerText = JSON.stringify(responseJSON);
+                        })
+                        .catch((error) => {
+                            document.getElementById('error').innerText = error;
+                        });
 
                     alert("Order submitted!");
                     this.showThankYouPage = true;
@@ -618,6 +617,7 @@
                     this.cart = []; // Clear cart items
                     this.clearForm(); // Reset form fields
                 },
+                
                 clearForm() {
                     // Reset each field to an empty or default state
                     this.order = {
@@ -703,7 +703,7 @@
                 //             });
                 //     });
                 // },
-            
+
             },
 
             watch: {
@@ -728,21 +728,21 @@
                     }
                 },
             },
-            created: function(){
+            created: function () {
                 fetch('https://futureacademybackend.onrender.com/collection/products', {
-                        method: 'GET', // set the HTTP method as 'GET'
-                        headers: {
-                            'Content-Type': 'application/json', // set the data type as JSON
-                        },
-                        // body: JSON.stringify(newProduct), // need to stringify the JSON object
+                    method: 'GET', // set the HTTP method as 'GET'
+                    headers: {
+                        'Content-Type': 'application/json', // set the data type as JSON
+                    },
+                    // body: JSON.stringify(newProduct), // need to stringify the JSON object
+                })
+                    .then(response => response.json())
+                    .then(responseJSON => {
+                        this.products = responseJSON;
                     })
-                        .then(response => response.json())
-                        .then(responseJSON => {
-                            this.products=responseJSON;
-                        })
-                        .catch((error) => {
-                            alert(error);
-                        });
+                    .catch((error) => {
+                        alert(error);
+                    });
             },
 
             computed: {
@@ -832,7 +832,7 @@
                     console.log("Sorted Products IDs:", this.sortedFilteredProducts.map(product => product.id));
                 },
             },
-            
+
         });
         $('#menu-btn').click(function () {
             $('nav .navigation ul').addClass('active')
