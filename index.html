@@ -705,10 +705,7 @@
                     }, 0) || "";
                 },
                 cartItems() {
-                    return this.cart.filter((item, index, self) =>
-                        index === self.findIndex(t => t.id === item.id)
-                    );
-                    console.log("Cart IDs:", this.cart.map(item => item.id));
+                    return this.cart;
                 },
                 cartSubtotal() {
                     return this.cart.reduce((total, item) => {
