@@ -605,10 +605,10 @@
                     })
                         .then(response => response.json())
                         .then(responseJSON => {
-                            document.getElementById('response').innerText = JSON.stringify(responseJSON);
+                            alert(JSON.stringify(responseJSON));
                         })
                         .catch((error) => {
-                            document.getElementById('error').innerText = error;
+                            alert(error);
                         });
 
                     alert("Order submitted!");
@@ -617,7 +617,7 @@
                     this.cart = []; // Clear cart items
                     this.clearForm(); // Reset form fields
                 },
-                
+
                 clearForm() {
                     // Reset each field to an empty or default state
                     this.order = {
@@ -641,38 +641,7 @@
                     this.showThankYouPage = false;
                 },
 
-                //===============================================\\
-                // submitOrder() {
-                //     const newOrder = {
-                //         order: this.order,
-                //         cart: this.cartItems,
-                //     };
-
-                //     console.log("Submitting order:", newOrder); // Debugging payload
-
-                //     fetch("https://futureacademybackend.onrender.com/collection/orders", {
-                //         method: "POST",
-                //         headers: {
-                //             "Content-Type": "application/json",
-                //         },
-                //         body: JSON.stringify(newOrder),
-                //     })
-                //         .then((response) => {
-                //             if (!response.ok) {
-                //                 throw new Error(`Failed to submit order. Status: ${response.status}`);
-                //             }
-                //             return response.json();
-                //         })
-                //         .then((data) => {
-                //             console.log("Order response from backend:", data); // Debug response
-                //             alert("Order submitted successfully!");
-                //             this.cart = []; // Clear the cart after submission
-                //         })
-                //         .catch((error) => {
-                //             console.error("Error submitting order:", error);
-                //             alert("Failed to place the order. Please try again.");
-                //         });
-                // },
+                
                 // updateSpaces() {
                 //     // Loop through unique cart items
                 //     this.cartItems.forEach((item) => {
