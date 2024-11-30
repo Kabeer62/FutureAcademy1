@@ -572,32 +572,32 @@
                 },
 
                 submitForm1() {
-    const newOrder = {
-        ...this.order,
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate a unique ID
-        cartItems: this.cart, // Include cart items in the order
-        totalAmount: this.cartSubtotal, // Add additional order details
-    };
+                    const newOrder = {
+                        ...this.order,
+                        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate a unique ID
+                        cartItems: this.cart, // Include cart items in the order
+                        totalAmount: this.cartSubtotal, // Add additional order details
+                    };
 
-    fetch("https://futureacademybackend.onrender.com/collection/orders", {
-        method: 'POST', // Set the HTTP method as 'POST'
-        headers: {
-            'Content-Type': 'application/json', // Set the data type as JSON
-        },
-        body: JSON.stringify(newOrder), // Stringify the JSON object
-    })
-        .then(response => response.json())
-        .then(responseJSON => {
-            alert("Order placed successfully!");
-            console.log("Order Response:", responseJSON);
+                    fetch("https://futureacademybackend.onrender.com/collection/orders", {
+                        method: 'POST', // Set the HTTP method as 'POST'
+                        headers: {
+                            'Content-Type': 'application/json', // Set the data type as JSON
+                        },
+                        body: JSON.stringify(newOrder), // Stringify the JSON object
+                    })
+                        .then(response => response.json())
+                        .then(responseJSON => {
+                            alert("Order placed successfully!");
+                            console.log("Order Response:", responseJSON);
 
-            // Reset cart and form after successful order
-            this.cart = [];
-            this.clearForm();
-        })
-        .catch((error) => {
-            alert("Error placing order: " + error);
-        });
+                            // Reset cart and form after successful order
+                            this.cart = [];
+                            this.clearForm();
+                        })
+                        .catch((error) => {
+                            alert("Error placing order: " + error);
+                        });
 
 
                     //     this.cartItems.forEach(product => {
@@ -624,35 +624,28 @@
                     this.clearForm(); // Reset form fields
                 },
                 updateSpaces() {
-						// Loop through unique cart items
-						this.cartItems.forEach((product) => {
-							// Calculate the remaining spaces
-							const spacesLeft = product.spaces - this.cartCount(product._id);
+    this.cart.forEach((product) => {
+        const spacesLeft = product.availableInventory - product.orderedQuantity;
 
-							// Prepare the payload for updating spaces
-							const updatedProducts = { spaces: spacesLeft };
-
-							// Send the PUT request to update the subject
-							fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
-								method: "PUT",
-								headers: {
-									"Content-Type": "application/json",
-								},
-								body: JSON.stringify(updatedProducts),
-							})
-								.then((response) => response.json())
-								.then((responseJSON) => {
-									if (responseJSON.msg === "success") {
-										console.log(`Updated spaces for subject: ${product._id}`);
-									} else {
-										console.error(`Failed to update spaces for subject: ${product._id}`);
-									}
-								})
-								.catch((error) => {
-									alert(error);
-								});
-						});
-                    },
+        fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ availableInventory: spacesLeft }),
+        })
+            .then((response) => response.json())
+            .then((responseJSON) => {
+                if (responseJSON.msg === "success") {
+                    console.log(`Updated availability for product: ${product._id}`);
+                    this.fetchProducts(); // Refetch products after updating
+                } else {
+                    console.error(`Failed to update availability for product: ${product._id}`);
+                }
+            })
+            .catch((error) => {
+                console.error("Error updating product:", error);
+            });
+    });
+},
 
                 clearForm() {
                     // Reset each field to an empty or default state
