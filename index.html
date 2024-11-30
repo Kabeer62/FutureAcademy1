@@ -601,69 +601,66 @@
 
 
                         this.cart.forEach(product => {
-    const newAvailability = {
-        availableInventory: product.availableInventory - product.orderedQuantity, // Update inventory correctly
-    };
+                            // Ensure availableInventory does not drop below 0
+                            const newAvailability = {
+                                availableInventory: Math.max(0, product.availableInventory - product.orderedQuantity), 
+                            };
 
-    fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newAvailability),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(`Updated availability for product ${product.title}:`, data);
+                            console.log(`Updating product ${product.title} (ID: ${product._id}) with new inventory:`, newAvailability);
 
-        // Optionally, update the local products array if necessary
-        const updatedProduct = this.products.find(p => p._id === product._id);
-        if (updatedProduct) {
-            updatedProduct.availableInventory = newAvailability.availableInventory;
-        }
-    })
-    .catch(error => {
-        console.error(`Error updating product ${product.title}:`, error);
-    });
-});
+                            fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(newAvailability),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(`Product ${product.title} updated successfully:`, data);
+                            })
+                            .catch(error => {
+                                console.error(`Error updating product ${product.title}:`, error);
+                            });
+                        });
                     alert("Order submitted!");
                     this.showThankYouPage = true;
                     this.showNavBar = false;
                     this.cart = []; // Clear cart items
                     this.clearForm(); // Reset form fields
                 },
-//                 updateSpaces() {
-//     // Loop through each item in the cart
-//     this.cart.forEach((product) => {
-//         // Calculate the new available inventory
-//         const spacesLeft = product.availableInventory - product.orderedQuantity;
+                //                 updateSpaces() {
+                //     // Loop through each item in the cart
+                //     this.cart.forEach((product) => {
+                //         // Calculate the new available inventory
+                //         const spacesLeft = product.availableInventory - product.orderedQuantity;
 
-//         // Validate the calculation to prevent negative inventory
-//         if (spacesLeft < 0) {
-//             console.error(`Invalid inventory update for product: ${product._id}`);
-//             return;
-//         }
+                //         // Validate the calculation to prevent negative inventory
+                //         if (spacesLeft < 0) {
+                //             console.error(`Invalid inventory update for product: ${product._id}`);
+                //             return;
+                //         }
 
-//         // Send the PUT request to update the product in the database
-//         fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
-//             method: "PUT",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ availableInventory: spacesLeft }),
-//         })
-//             .then((response) => response.json())
-//             .then((responseJSON) => {
-//                 if (responseJSON.msg === "success") {
-//                     console.log(`Successfully updated availability for product: ${product._id}`);
-//                 } else {
-//                     console.error(`Failed to update availability for product: ${product._id}`);
-//                 }
-//             })
-//             .catch((error) => {
-//                 console.error(`Error updating product ${product._id}:`, error);
-//             });
-//     });
+                //         // Send the PUT request to update the product in the database
+                //         fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+                //             method: "PUT",
+                //             headers: { "Content-Type": "application/json" },
+                //             body: JSON.stringify({ availableInventory: spacesLeft }),
+                //         })
+                //             .then((response) => response.json())
+                //             .then((responseJSON) => {
+                //                 if (responseJSON.msg === "success") {
+                //                     console.log(`Successfully updated availability for product: ${product._id}`);
+                //                 } else {
+                //                     console.error(`Failed to update availability for product: ${product._id}`);
+                //                 }
+                //             })
+                //             .catch((error) => {
+                //                 console.error(`Error updating product ${product._id}:`, error);
+                //             });
+                //     });
 
-//     // Optionally refetch products to sync state after all updates
-//     this.fetchProducts();
-// },
+                //     // Optionally refetch products to sync state after all updates
+                //     this.fetchProducts();
+                // },
 
                 clearForm() {
                     // Reset each field to an empty or default state
