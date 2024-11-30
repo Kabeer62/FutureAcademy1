@@ -624,9 +624,18 @@
                     this.clearForm(); // Reset form fields
                 },
                 updateSpaces() {
+    // Loop through each item in the cart
     this.cart.forEach((product) => {
+        // Calculate the new available inventory
         const spacesLeft = product.availableInventory - product.orderedQuantity;
 
+        // Validate the calculation to prevent negative inventory
+        if (spacesLeft < 0) {
+            console.error(`Invalid inventory update for product: ${product._id}`);
+            return;
+        }
+
+        // Send the PUT request to update the product in the database
         fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -635,16 +644,18 @@
             .then((response) => response.json())
             .then((responseJSON) => {
                 if (responseJSON.msg === "success") {
-                    console.log(`Updated availability for product: ${product._id}`);
-                    this.fetchProducts(); // Refetch products after updating
+                    console.log(`Successfully updated availability for product: ${product._id}`);
                 } else {
                     console.error(`Failed to update availability for product: ${product._id}`);
                 }
             })
             .catch((error) => {
-                console.error("Error updating product:", error);
+                console.error(`Error updating product ${product._id}:`, error);
             });
     });
+
+    // Optionally refetch products to sync state after all updates
+    this.fetchProducts();
 },
 
                 clearForm() {
