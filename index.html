@@ -131,9 +131,9 @@
                 </section>
                 <!-- Loop through products -->
 
-                <h1 id="title" v-if="sortedFilteredProducts.length > 0" v-text="sitename"></h1>
+                <h1 id="title" v-text="sitename"></h1>
                 <section id="products-section">
-                    <div v-for="product in products" :key="product.id" class="product-item">
+                    <div v-for="product in sortedFilteredProducts" :key="product.id" class="product-item">
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
@@ -141,7 +141,7 @@
                             </div>
                         </div>
 
-                        <figure @click="openImageModal(imageLink(product.image))">
+                        <figure @click="openImageModal(product.image)">
                             <img :src="imageLink(product.image)" alt="Product image">
                         </figure>
                         <section id="modules">
@@ -151,10 +151,6 @@
                             <p v-else class="out-of-stock">Out of stock</p>
                             <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
                             <p class="price">${{ product.price }}</p>
-                            <!-- <button @click="addToCart(product)" v-if="product.availableInventory > 0"
-                                class="add-button">
-                                <i class="fas fa-cart-plus"></i>
-                            </button> -->
                             <button @click="addToCart(product)" :disabled="product.availableInventory === 0"
                                 class="add-button">
                                 <i class="fas fa-cart-plus"></i>
@@ -209,10 +205,8 @@
                         Shop</button>
                     <h2 class="title1">Your Cart <i class="fa-solid fa-cart-shopping"></i></h2>
                     <div>
-                        <div v-for="(item, index) in cartItems" :key="'cart-' + item.id + '-' + index"
-                            class="cart-product">
+                        <div v-for="item in cartItems" :key="item.id" class="cart-product">
                             <figure class="cart-product-figure">
-                                <!-- Bind the src attribute dynamically using imageLink -->
                                 <img :src="imageLink(item.image)" class="cart-product-img" alt="Product image">
                             </figure>
                             <div class="cart-product-info">
@@ -220,6 +214,7 @@
                                 <p class="cart-product-location">{{ item.location }}</p>
                                 <!-- Quantity controls -->
                                 <div class="cart-product-subsection">
+                                    <!-- <p class="qty">Qty: </p> -->
                                     <div class="cart-product-quantity">
                                         <button @click="subtractFromCart(item)" class="quantity-button"
                                             :disabled="item.orderedQuantity === 0">-</button>
@@ -228,9 +223,8 @@
                                             :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
-                                    <p v-on:click="removeFromCart(item)" class="remove"><i
-                                            class="fa-solid fa-trash"></i>
                                 </div>
+                                <p v-on:click="removeFromCart(item)" class="remove"><i class="fa-solid fa-trash"></i>
                                 </p>
                             </div>
                             <div>
@@ -271,20 +265,17 @@
                         <h3 class="title">Checkout Form <i class="fa-solid fa-bag-shopping"></i></h3>
                         <h4>Billing Address</h4>
                         <!-- First Name Input with Shake Animation -->
-                        <!-- First Name Input with Shake Animation -->
                         <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text"
                             placeholder="First Name" :class="{'invalid-input': order.firstName && !isFirstNameValid}"
-                            class="form-input" />
+                            class="form-input">
                         <p v-if="order.firstName && !isFirstNameValid" class="error">
-                            First name must contain only letters.
-                        </p>
+                            First name must contain only letters.</p>
 
                         <!-- Last Name Input with Shake Animation -->
                         <input v-model.trim="order.lastName" :key="shakeKeyLastName" type="text" placeholder="Last Name"
-                            :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input" />
+                            :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input">
                         <p v-if="order.lastName && !isLastNameValid" class="error">
-                            Last name must contain only letters.
-                        </p>
+                            Last name must contain only letters.</p>
 
                         <!-- Email Input with Shake Animation -->
                         <input v-model.trim="order.email" :key="shakeKeyEmail" type="email" placeholder="Email Address"
@@ -299,6 +290,8 @@
                         <p v-if="order.phone && !isPhoneValid" class="error">
                             Phone number must contain only numbers.
                         </p>
+
+                        <!-- Other Form Fields (Address, City, etc.) -->
                         <input v-model.trim="order.address" type="text" placeholder="Address" class="form-input">
                         <input v-model.trim="order.city" type="text" placeholder="City" class="form-input">
                         <input v-model.trim="order.zip" type="text" placeholder="Postal Code" class="form-input">
@@ -325,7 +318,7 @@
 
                     <div id="billing-information">
                         <figure class="receipt-figure">
-                            <img v-bind:src="imageLink(school.logo)" alt="">
+                            <img v-bind:src="school.logo" class="receipt-img">
                         </figure>
                         <h4>Bill Overview</h4>
                         <hr class="receipt-line">
@@ -354,19 +347,6 @@
                             <p class="bill-answer">{{ order.method }}</p>
                         </span>
                         <hr class="receipt-line">
-                        <span class="receipt-span">
-                            <p class="bill-label">Product:</p>
-                            <p class="bill-answer">Amount</p>
-                        </span>
-                        <span v-for="item in cartItems" :key="item.id" class="receipt-span">
-                            <p class="bill-label">{{ item.title }} - {{item.orderedQuantity}}</p>
-                            <p class="bill-answer">${{ (item.price * item.orderedQuantity).toFixed(2) }}</p>
-                        </span>
-                        <hr class="receipt-line">
-                        <span class="receipt-span">
-                            <p class="bill-label">Total:</p>
-                            <p class="bill-answer">${{ cartSubtotal.toFixed(2)}}</p>
-                        </span>
                     </div>
                 </section>
             </div>
@@ -537,20 +517,19 @@
                     return `https://futureacademybackend.onrender.com/${image}`;
                 },
 
-                addToCart(product) {
+                addToCart: function (product) {
                     if (product.availableInventory > 0) {
-                        const cartProduct = this.cart.find(item => item.id === product.id);
+                        let cartProduct = this.cart.find(item => item.id === product.id);
 
                         if (cartProduct) {
-                            // Increment quantity if the product is already in the cart
-                            cartProduct.orderedQuantity++;
+                            cartProduct.orderedQuantity++; // Update cart quantity
                         } else {
-                            // Add the product to the cart with an initial quantity
-                            this.cart.push({ ...product, orderedQuantity: 1 });
+                            // Push the actual reference of the product, not a shallow copy
+                            this.cart.push(product);
+                            product.orderedQuantity = 1; // Initialize in the product
                         }
 
-                        // Decrement the available inventory
-                        product.availableInventory--;
+                        product.availableInventory--; // Decrement inventory in the original product reference
                         this.showCartButton = true;
                     } else {
                         alert("Product is out of stock!");
@@ -611,29 +590,59 @@
                             alert(error);
                         });
 
-                        this.cartItems.forEach(product => {
-                        const newAvailability = { availableInventory: product.availableInventory }; // Use correct `subject`
-                        fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(newAvailability),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            // Update local subjects array if necessary
-                            const updatedProducts = this.products.find(s => s._id === product._id);
-                            if (updatedProducts) updatedProducts.availableInventory = data.availableInventory;
-                        })
-                        .catch(error => {
-                            alert(error);
-                        });
-                    });
+                    //     this.cartItems.forEach(product => {
+                    //     const newAvailability = { availableInventory: product.availableInventory }; // Use correct `subject`
+                    //     fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+                    //         method: 'PUT',
+                    //         headers: { 'Content-Type': 'application/json' },
+                    //         body: JSON.stringify(newAvailability),
+                    //     })
+                    //     .then(response => response.json())
+                    //     .then(data => {
+                    //         // Update local subjects array if necessary
+                    //         const updatedProducts = this.products.find(s => s._id === product._id);
+                    //         if (updatedProducts) updatedProducts.availableInventory = data.availableInventory;
+                    //     })
+                    //     .catch(error => {
+                    //         alert(error);
+                    //     });
+                    // });
                     alert("Order submitted!");
                     this.showThankYouPage = true;
                     this.showNavBar = false;
                     this.cart = []; // Clear cart items
                     this.clearForm(); // Reset form fields
                 },
+                updateSpaces() {
+						// Loop through unique cart items
+						this.cartItems.forEach((item) => {
+							// Calculate the remaining spaces
+							const spacesLeft = item.spaces - this.cartCount(product._id);
+
+							// Prepare the payload for updating spaces
+							const updatedProducts = { spaces: spacesLeft };
+
+							// Send the PUT request to update the subject
+							fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+								method: "PUT",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								body: JSON.stringify(updatedProducts),
+							})
+								.then((response) => response.json())
+								.then((responseJSON) => {
+									if (responseJSON.msg === "success") {
+										console.log(`Updated spaces for subject: ${product._id}`);
+									} else {
+										console.error(`Failed to update spaces for subject: ${product._id}`);
+									}
+								})
+								.catch((error) => {
+									alert(error);
+								});
+						});
+                    },
 
                 clearForm() {
                     // Reset each field to an empty or default state
@@ -705,10 +714,7 @@
                     }, 0) || "";
                 },
                 cartItems() {
-                    return this.cart.filter((item, index, self) =>
-                        index === self.findIndex(t => t.id === item.id)
-                    );
-                    console.log("Cart IDs:", this.cart.map(item => item.id));
+                    return this.cart;
                 },
                 cartSubtotal() {
                     return this.cart.reduce((total, item) => {
