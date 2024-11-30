@@ -572,23 +572,33 @@
                 },
 
                 submitForm1() {
-                    const newOrder = this.order;
+    const newOrder = {
+        ...this.order,
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate a unique ID
+        cartItems: this.cart, // Include cart items in the order
+        totalAmount: this.cartSubtotal, // Add additional order details
+    };
 
-                    // set the url to your server and route
-                    fetch("https://futureacademybackend.onrender.com/collection/orders", {
-                        method: 'POST', // set the HTTP method as 'POST'
-                        headers: {
-                            'Content-Type': 'application/json', // set the data type as JSON
-                        },
-                        body: JSON.stringify(newOrder), // need to stringify the JSON object
-                    })
-                        .then(response => response.json())
-                        .then(responseJSON => {
-                            alert(JSON.stringify(responseJSON));
-                        })
-                        .catch((error) => {
-                            alert(error);
-                        });
+    fetch("https://futureacademybackend.onrender.com/collection/orders", {
+        method: 'POST', // Set the HTTP method as 'POST'
+        headers: {
+            'Content-Type': 'application/json', // Set the data type as JSON
+        },
+        body: JSON.stringify(newOrder), // Stringify the JSON object
+    })
+        .then(response => response.json())
+        .then(responseJSON => {
+            alert("Order placed successfully!");
+            console.log("Order Response:", responseJSON);
+
+            // Reset cart and form after successful order
+            this.cart = [];
+            this.clearForm();
+        })
+        .catch((error) => {
+            alert("Error placing order: " + error);
+        });
+
 
                     //     this.cartItems.forEach(product => {
                     //     const newAvailability = { availableInventory: product.availableInventory }; // Use correct `subject`
@@ -615,9 +625,9 @@
                 },
                 updateSpaces() {
 						// Loop through unique cart items
-						this.cartItems.forEach((item) => {
+						this.cartItems.forEach((product) => {
 							// Calculate the remaining spaces
-							const spacesLeft = item.spaces - this.cartCount(product._id);
+							const spacesLeft = product.spaces - this.cartCount(product._id);
 
 							// Prepare the payload for updating spaces
 							const updatedProducts = { spaces: spacesLeft };
