@@ -137,7 +137,7 @@
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <div class="modal-content" @click.stop>
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
-                                <img :src="currentImage" alt="Product image" class="modal-image">
+                                <img :src="imageLink(currentImage)" alt="Product image" class="modal-image">
                             </div>
                         </div>
 
@@ -223,9 +223,10 @@
                                             :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
+                                    <p v-on:click="removeFromCart(item)" class="remove"><i
+                                            class="fa-solid fa-trash"></i>
+                                    </p>
                                 </div>
-                                <p v-on:click="removeFromCart(item)" class="remove"><i class="fa-solid fa-trash"></i>
-                                </p>
                             </div>
                             <div>
                                 <!-- Product price -->
@@ -421,6 +422,7 @@
                 },
 
                 products: [],
+                originalProducts: [],
                 cart: [],
                 showThankYouPage: false,
                 order: {
@@ -519,7 +521,7 @@
 
                 addToCart: function (product) {
                     if (product.availableInventory > 0) {
-                        let cartProduct = this.cart.find(item => item.id === product.id);
+                        let cartProduct = this.cart.find(item => item._id === product._id);
 
                         if (cartProduct) {
                             cartProduct.orderedQuantity++; // Update cart quantity
@@ -538,7 +540,7 @@
 
 
                 subtractFromCart: function (product) {
-                    let cartProduct = this.cart.find(item => item.id === product.id);
+                    let cartProduct = this.cart.find(item => item._id === product._id);
 
                     if (cartProduct && cartProduct.orderedQuantity > 0) {
                         cartProduct.orderedQuantity--;
@@ -553,11 +555,11 @@
                 },
 
                 removeFromCart: function (product) {
-                    const cartIndex = this.cart.findIndex(item => item.id === product.id);
+                    const cartIndex = this.cart.findIndex(item => item._id === product._id);
 
                     if (cartIndex > -1) {
                         // Update product availability in the products array
-                        const productInStore = this.products.find(item => item.id === product.id);
+                        const productInStore = this.products.find(item => item._id === product._id);
                         if (productInStore) {
                             // Add the ordered quantity back to available inventory
                             productInStore.availableInventory += product.orderedQuantity;
@@ -572,13 +574,17 @@
                 },
 
                 submitForm1() {
+                    // Extract only required fields for the order
                     const newOrder = {
-                        ...this.order,
-                        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate a unique ID
-                        cartItems: this.cart, // Include cart items in the order
-                        totalAmount: this.cartSubtotal, // Add additional order details
+                        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                        name: `${this.order.firstName} ${this.order.lastName}`,
+                        phoneNumber: this.order.phoneNumber,
+                        lessonIds: this.cart.map(item => item._id),
+                        numberOfSpaces: this.cart.reduce((total, item) => total + item.orderedQuantity, 0),
+                        totalAmount: this.cartSubtotal,
                     };
 
+                    // Submit the new order to the server
                     fetch("https://futureacademybackend.onrender.com/collection/orders", {
                         method: 'POST', // Set the HTTP method as 'POST'
                         headers: {
@@ -597,22 +603,23 @@
                         })
                         .catch((error) => {
                             alert("Error placing order: " + error);
+                            console.error("Order Placement Error:", error);
                         });
 
 
-                        this.cart.forEach(product => {
-                            // Ensure availableInventory does not drop below 0
-                            const newAvailability = {
-                                availableInventory: Math.max(0, product.availableInventory - product.orderedQuantity), 
-                            };
+                    this.cart.forEach(product => {
+                        // Ensure availableInventory does not drop below 0
+                        const newAvailability = {
+                            availableInventory: Math.max(0, product.availableInventory),
+                        };
 
-                            console.log(`Updating product ${product.title} (ID: ${product._id}) with new inventory:`, newAvailability);
+                        console.log(`Updating product ${product.title} (ID: ${product._id}) with new inventory:`, newAvailability);
 
-                            fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(newAvailability),
-                            })
+                        fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newAvailability),
+                        })
                             .then(response => response.json())
                             .then(data => {
                                 console.log(`Product ${product.title} updated successfully:`, data);
@@ -620,47 +627,13 @@
                             .catch(error => {
                                 console.error(`Error updating product ${product.title}:`, error);
                             });
-                        });
+                    });
                     alert("Order submitted!");
                     this.showThankYouPage = true;
                     this.showNavBar = false;
                     this.cart = []; // Clear cart items
                     this.clearForm(); // Reset form fields
                 },
-                //                 updateSpaces() {
-                //     // Loop through each item in the cart
-                //     this.cart.forEach((product) => {
-                //         // Calculate the new available inventory
-                //         const spacesLeft = product.availableInventory - product.orderedQuantity;
-
-                //         // Validate the calculation to prevent negative inventory
-                //         if (spacesLeft < 0) {
-                //             console.error(`Invalid inventory update for product: ${product._id}`);
-                //             return;
-                //         }
-
-                //         // Send the PUT request to update the product in the database
-                //         fetch(`https://futureacademybackend.onrender.com/collection/products/${product._id}`, {
-                //             method: "PUT",
-                //             headers: { "Content-Type": "application/json" },
-                //             body: JSON.stringify({ availableInventory: spacesLeft }),
-                //         })
-                //             .then((response) => response.json())
-                //             .then((responseJSON) => {
-                //                 if (responseJSON.msg === "success") {
-                //                     console.log(`Successfully updated availability for product: ${product._id}`);
-                //                 } else {
-                //                     console.error(`Failed to update availability for product: ${product._id}`);
-                //                 }
-                //             })
-                //             .catch((error) => {
-                //                 console.error(`Error updating product ${product._id}:`, error);
-                //             });
-                //     });
-
-                //     // Optionally refetch products to sync state after all updates
-                //     this.fetchProducts();
-                // },
 
                 clearForm() {
                     // Reset each field to an empty or default state
@@ -677,7 +650,6 @@
                 },
                 goToHome() {
                     // Reset all relevant states for returning to the home page
-                    // this.showThankYouPage = false;
                     this.showProduct = true;
                     this.showHomeContent = true;
                     this.showNavBar = true;
@@ -685,44 +657,23 @@
                     this.showThankYouPage = false;
                 },
             },
-
-            watch: {
-                'order.firstName'(newVal) {
-                    if (!this.isFirstNameValid && newVal) {
-                        this.shakeKeyFirstName++; // Increment to trigger a re-render
-                    }
-                },
-                'order.lastName'(newVal) {
-                    if (!this.isLastNameValid && newVal) {
-                        this.shakeKeyLastName++; // Increment to trigger a re-render
-                    }
-                },
-                'order.email'(newVal) {
-                    if (!this.isEmailValid && newVal) {
-                        this.shakeKeyEmail++; // Increment to trigger a re-render
-                    }
-                },
-                'order.phone'(newVal) {
-                    if (!this.isPhoneValid && newVal) {
-                        this.shakeKeyPhone++; // Increment to trigger a re-render
-                    }
-                },
-            },
+            
             created: function () {
                 fetch('https://futureacademybackend.onrender.com/collection/products', {
-                    method: 'GET', // set the HTTP method as 'GET'
+                    method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json', // set the data type as JSON
+                        'Content-Type': 'application/json',
                     },
-                    // body: JSON.stringify(newProduct), // need to stringify the JSON object
                 })
                     .then(response => response.json())
                     .then(responseJSON => {
                         this.products = responseJSON;
+                        this.originalProducts = responseJSON;
                     })
                     .catch((error) => {
                         alert(error);
                     });
+
             },
 
             computed: {
@@ -741,17 +692,29 @@
                 },
 
                 filteredProducts() {
-                    return this.products.filter(product => {
-                        const query = this.searchQuery.toLowerCase();
+                    if (!this.searchQuery) {
+                        // If the search query is empty, reset products to the original list
+                        return this.originalProducts;
+                    }
+                    const queryParam = encodeURIComponent(this.searchQuery.trim());
+                    const searchUrl = `https://futureacademybackend.onrender.com/search/products?q=${queryParam}`;
 
-                        // Check if the title, location and price matches the query
-                        const matchesTitle = product.title.toLowerCase().includes(query);
-                        const matchesLocation = product.location.toLowerCase().includes(query);
-                        const matchesPrice = product.price.toString().includes(query);
-                        const matchesAvailableInventory = product.availableInventory.toString().includes(query);
+                    // Fetch search results when there's a search query
+                    fetch(searchUrl)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Failed to fetch search results");
+                            }
+                            return response.json();
+                        })
+                        .then(results => {
+                            this.products = results; // Update products with the search results
+                        })
+                        .catch(error => {
+                            console.error("Error fetching search results:", error);
+                        });
 
-                        return matchesTitle || matchesLocation || matchesPrice || matchesAvailableInventory;
-                    });
+                    return this.products; // Return the filtered products for display
                 },
 
                 isFirstNameValid() {

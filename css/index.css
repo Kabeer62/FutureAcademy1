@@ -772,8 +772,9 @@ button {
 }
 
 .pro-links i {
-    border: 1px solid rgb(21, 21, 100);
+    border: 0.1px solid rgb(21, 21, 100);
     cursor: pointer;
+    padding: 0.5rem;
     transition: 0.3s ease;
 }
 
