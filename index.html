@@ -20,63 +20,85 @@
 <body>
 
     <div id="app">
-        <!-- NavBar -->
         <header>
-            <!-- NavBar -->
+            <!-- Navigation Bar -->
             <nav v-show="showNavBar">
+                <!-- School Logo -->
                 <figure>
                     <img v-bind:src="imageLink(school.logo)" alt="logo"
                         style="width: 120px; height: 100px; background-color: none;" />
                 </figure>
+        
                 <div class="navigation">
-
+                    <!-- Search Box -->
                     <div id="search-box">
+                        <!-- Search Icon -->
                         <i class="fas fa-search search-icon"></i>
+                        <!-- Input for search functionality, linked to the `searchQuery` Vue data property -->
                         <input type="text" name="search" placeholder="Search Courses" v-model="searchQuery"
                             id="search-area">
                     </div>
+        
+                    <!-- Navigation Links -->
                     <ul>
+                        <!-- Close Menu Button (Mobile) -->
                         <i id="menu-close" class="fa-solid fa-x"></i>
                         <li><a href="#" v-on:click="showHome">Home</a></li>
                         <li><a href="#" @click="showCourses">Courses</a></li>
-                        <li><a @mouseover="showAbout = true" @mouseleave="showAbout = false" class="nav-item">About</a>
+                        <!-- Displays "About" info on hover -->
+                        <li>
+                            <a @mouseover="showAbout = true" @mouseleave="showAbout = false" class="nav-item">About</a>
                         </li>
-                        <li><a @mouseover="showContact = true" @mouseleave="showContact = false"
-                                class="nav-item">Contact</a></li>
+                        <!-- Displays "Contact" info on hover -->
+                        <li>
+                            <a @mouseover="showContact = true" @mouseleave="showContact = false" class="nav-item">Contact</a>
+                        </li>
+        
+                        <!-- Cart/Checkout Button -->
+                        <!-- Only shown if `showCartButton` is true -->
                         <button id="checkout_button" v-on:click="showCheckout" v-show="showCartButton">
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
+        
+                    <!-- Menu Button (Mobile) -->
                     <img id="menu-btn" :src="imageLink('images/menu1.jpg')" alt="menu-btn">
                 </div>
             </nav>
+        
+            <!-- Contact Info Box -->
+            <!-- Displays contact information when hovered -->
             <div @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
                 v-show="showContact" class="info-box">
                 <h3 class="contact-us">Contact Us</h3>
+                <!-- Contact Details -->
                 <p><strong>Customer Support Hotline:</strong> <a href="tel:+123456789">+971563636822</a></p>
-                <p><strong>Business Hours:</strong><br>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00
-                    PM</p>
+                <p><strong>Business Hours:</strong><br>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM</p>
                 <p><strong>For SMS Support:</strong> <a href="sms:123">"123"</a></p>
                 <p><strong>Email Us:</strong> <a href="mailto:someone@example.com">Kabeerkumar577@gmail.com</a></p>
-
+        
+                <!-- Social Media Links -->
                 <h4>Connect with Us:</h4>
                 <ul style="list-style-type: none; padding: 0;">
-                    <li><a href="https://facebook.com/yourpage" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    </li>
-                    <li><a href="https://twitter.com/yourprofile" target="_blank"><i class="fab fa-instagram"></i></a>
-                    </li>
-                    <li><a href="https://linkedin.com/company/yourcompany" target="_blank"><i
-                                class="fab fa-linkedin-in"></i></a></li>
+                    <li><a href="https://facebook.com/yourpage" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="https://twitter.com/yourprofile" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="https://linkedin.com/company/yourcompany" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
                 </ul>
             </div>
+        
+            <!-- About Info Box -->
+            <!-- Displays "About Us" information when hovered -->
             <div @mouseover="showAbout = true" @mouseleave="showAbout = false" id="about-info" v-show="showAbout"
                 class="about-box">
                 <h3 class="About">About Us</h3>
                 <h3 class="kabeer">Kabeer Kumar</h3>
                 <div class="about-profile">
+                    <!-- Profile Image -->
                     <img :src="imageLink('images/profile1.jpg')" alt="Profile Picture"
                         @mouseover="showProfileMessage = true" @mouseleave="showProfileMessage = false"
                         id="profile-image" />
+                    
+                    <!-- About Us Description -->
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
                         equips students with practical skills and knowledge for their future careers.</p>
@@ -86,30 +108,39 @@
                     <p>Whether you're starting your career or looking to expand your skill set, Future Academy is here
                         to support your educational journey. Join us and unlock your potential with a learning
                         experience that’s designed just for you.</p>
-
                 </div>
             </div>
         </header>
 
         <main>
+            <!-- Main section is displayed only if 'showProduct' is true -->
             <section id="main-section" v-if="showProduct">
-                <!-- Home -->
+            
+                <!-- Home Section -->
                 <section id="home" v-if="showHomeContent">
+                    <!-- Displayed only if 'showHomeContent' is true -->
                     <h2>Unlock innovation with the power of technology education</h2>
-                    <p>Technology is not just a tool, it’s a gateway to innovation,
-                        creativity, and a better future. By investing in tech education,
-                        we invest in a future where everyone has the potential to contribute to meaningful change and
-                        drive
-                        progress.</p>
+                    <p>
+                        Technology is not just a tool, it’s a gateway to innovation, creativity, and a better future. 
+                        By investing in tech education, we invest in a future where everyone has the potential to contribute 
+                        to meaningful change and drive progress.
+                    </p>
                     <div class="btn">
                         <a class="learn" href="#">Learn More</a>
                         <a class="courses" href="#" @click="showCourses">Visit Courses</a>
                     </div>
                 </section>
-
+            
+                <!-- Sort and Filter Section -->
                 <section v-if="showCoursesOnly && sortedFilteredProducts.length > 0" id="sort-toggle-section">
+                    <!-- Displayed only if 'showCoursesOnly' is true and there are products to show -->
+
                     <button @click="toggleSortSection" class="sort-toggle-btn">Filter By</button>
+                    <!-- Toggles visibility of the sorting/filter options -->
+
                     <div class="sort-options" v-show="showSortSection">
+                        <!-- Sorting and filtering options, displayed when 'showSortSection' is true -->
+
                         <div class="tags">
                             <span class="close-tag" v-on:click="closeSortSection">
                                 <i class="fa-solid fa-circle-xmark"></i>
@@ -129,36 +160,52 @@
                         </select>
                     </div>
                 </section>
-                <!-- Loop through products -->
 
                 <h1 id="title" v-text="sitename"></h1>
+            
+                <!-- Products Section -->
                 <section id="products-section">
+                    <!-- Loop through the filtered and sorted product list -->
                     <div v-for="product in sortedFilteredProducts" :key="product.id" class="product-item">
+                        <!-- Each product is displayed in its own 'product-item' container -->
+            
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
+                            <!-- Displayed only if 'showImageModal' is true -->
                             <div class="modal-content" @click.stop>
+                                <!-- Modal content, clicking inside stops the event propagation -->
                                 <span class="close-btn" @click="closeImageModal">&times;</span>
                                 <img :src="imageLink(currentImage)" alt="Product image" class="modal-image">
                             </div>
                         </div>
-
+            
+                        <!-- Product Image -->
                         <figure @click="openImageModal(product.image)">
                             <img :src="imageLink(product.image)" alt="Product image">
+                            <!-- Product image fetched dynamically -->
                         </figure>
+            
+                        <!-- Product Details -->
                         <section id="modules">
                             <h2 class="product-item">{{ product.title }}</h2>
                             <p class="product-item product-location">{{ product.location }}</p>
                             <p v-if="product.availableInventory > 0">In stock: {{ product.availableInventory }}</p>
+                            <!-- Displays stock availability if inventory is greater than 0 -->
                             <p v-else class="out-of-stock">Out of stock</p>
+                            <!-- Displays "Out of stock" if inventory is 0 -->
                             <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
                             <p class="price">${{ product.price }}</p>
-                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0"
-                                class="add-button">
+                            <!-- Product price -->
+                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0" class="add-button">
+                                <!-- Add to Cart button, disabled if inventory is 0 -->
                                 <i class="fas fa-cart-plus"></i>
                             </button>
                         </section>
                     </div>
-                    <p v-if="sortedFilteredProducts.length === 0" class="no-match-message">No match found for your
-                        search.</p>
+            
+                    <!-- Message for No Matching Products -->
+                    <p v-if="sortedFilteredProducts.length === 0" class="no-match-message">
+                        No match found for your search.
+                    </p>
                 </section>
 
                 <!-- Register Form -->
@@ -200,40 +247,52 @@
 
             <!-- Courses Form End-->
             <div v-else>
+                <!-- Cart Section: Displays if form and thank-you page are not shown -->
                 <section v-if="!showForm && !showThankYouPage" id="cart-section">
-                    <button @click="goToCourses" class="back-to-shop-btn"><i class="fa-solid fa-arrow-left"></i>Back To
-                        Shop</button>
+                    <!-- Back to shop button -->
+                    <button @click="goToCourses" class="back-to-shop-btn">
+                        <i class="fa-solid fa-arrow-left"></i>Back To Shop
+                    </button>
                     <h2 class="title1">Your Cart <i class="fa-solid fa-cart-shopping"></i></h2>
+            
+                    <!-- Cart Items Loop -->
                     <div>
                         <div v-for="item in cartItems" :key="item.id" class="cart-product">
+                            <!-- Product Image -->
                             <figure class="cart-product-figure">
                                 <img :src="imageLink(item.image)" class="cart-product-img" alt="Product image">
                             </figure>
                             <div class="cart-product-info">
+                                <!-- Product Details -->
                                 <h2 class="cart-product-title">{{ item.title }}</h2>
                                 <p class="cart-product-location">{{ item.location }}</p>
-                                <!-- Quantity controls -->
+                                
+                                <!-- Quantity Controls -->
                                 <div class="cart-product-subsection">
-                                    <!-- <p class="qty">Qty: </p> -->
                                     <div class="cart-product-quantity">
-                                        <button @click="subtractFromCart(item)" class="quantity-button"
+                                        <!-- Decrease Quantity Button -->
+                                        <button @click="subtractFromCart(item)" class="quantity-button" 
                                             :disabled="item.orderedQuantity === 0">-</button>
                                         <p class="cart-product-count">{{ item.orderedQuantity }}</p>
-                                        <button @click="addToCart(item)" class="quantity-button"
+                                        <!-- Increase Quantity Button -->
+                                        <button @click="addToCart(item)" class="quantity-button" 
                                             :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
-                                    <p v-on:click="removeFromCart(item)" class="remove"><i
-                                            class="fa-solid fa-trash"></i>
+                                    <!-- Remove Item from Cart -->
+                                    <p v-on:click="removeFromCart(item)" class="remove">
+                                        <i class="fa-solid fa-trash"></i>
                                     </p>
                                 </div>
                             </div>
+                            <!-- Total Price for the Item -->
                             <div>
-                                <!-- Product price -->
                                 <p class="cart-product-price">${{ item.price * item.orderedQuantity }}</p>
                             </div>
                         </div>
                     </div>
+            
+                    <!-- Price Overview Section -->
                     <div id="price-overview">
                         <h3 class="title">Subtotal</h3>
                         <hr class="po-line">
@@ -247,12 +306,16 @@
                         </span>
                         <span class="po-span-2">
                             <p class="po-text">TOTAL</p>
-                            <p class="price-text">${{ cartSubtotal.toFixed(2)}}</p>
+                            <p class="price-text">${{ cartSubtotal.toFixed(2) }}</p>
                         </span>
-                        <a href="#checkout-form"><button v-on:click="showFormSection()" id="ptcButton">PROCEED TO
-                                CHECKOUT</button></a>
+                        <!-- Proceed to Checkout Button -->
+                        <a href="#checkout-form">
+                            <button v-on:click="showFormSection()" id="ptcButton">PROCEED TO CHECKOUT</button>
+                        </a>
                     </div>
                 </section>
+            
+                <!-- Thank You Page: Displays after order is placed -->
                 <section v-if="showThankYouPage" id="thank-you-section">
                     <div class="thank-you-message">
                         <i class="fa-solid fa-check-circle"></i>
@@ -260,39 +323,43 @@
                         <button class="btn-home" @click="goToHome">Back to Home</button>
                     </div>
                 </section>
-
+            
+                <!-- Checkout Form Section -->
                 <section v-if="!showThankYouPage && showForm" id="checkout-section">
                     <div id="checkout-form">
                         <h3 class="title">Checkout Form <i class="fa-solid fa-bag-shopping"></i></h3>
                         <h4>Billing Address</h4>
-                        <!-- First Name Input with Shake Animation -->
-                        <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text"
-                            placeholder="First Name" :class="{'invalid-input': order.firstName && !isFirstNameValid}"
-                            class="form-input">
+                        
+                        <!-- Input Fields with Validation -->
+                        <!-- First Name -->
+                        <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text" placeholder="First Name"
+                            :class="{'invalid-input': order.firstName && !isFirstNameValid}" class="form-input">
                         <p v-if="order.firstName && !isFirstNameValid" class="error">
-                            First name must contain only letters.</p>
-
-                        <!-- Last Name Input with Shake Animation -->
+                            First name must contain only letters.
+                        </p>
+            
+                        <!-- Last Name -->
                         <input v-model.trim="order.lastName" :key="shakeKeyLastName" type="text" placeholder="Last Name"
                             :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input">
                         <p v-if="order.lastName && !isLastNameValid" class="error">
-                            Last name must contain only letters.</p>
-
-                        <!-- Email Input with Shake Animation -->
+                            Last name must contain only letters.
+                        </p>
+            
+                        <!-- Email -->
                         <input v-model.trim="order.email" :key="shakeKeyEmail" type="email" placeholder="Email Address"
                             :class="{'invalid-input': order.email && !isEmailValid}" class="form-input">
                         <p v-if="order.email && !isEmailValid" class="error">
                             Please enter a valid email address.
                         </p>
-
-                        <!-- Phone Number Input -->
+            
+                        <!-- Phone Number -->
                         <input v-model.trim="order.phone" :key="shakeKey" type="text" placeholder="Phone Number"
                             :class="{'invalid-input': order.phone && !isPhoneValid}" class="form-input">
                         <p v-if="order.phone && !isPhoneValid" class="error">
                             Phone number must contain only numbers.
                         </p>
-
-                        <!-- Other Form Fields (Address, City, etc.) -->
+            
+                        <!-- Other Form Fields -->
                         <input v-model.trim="order.address" type="text" placeholder="Address" class="form-input">
                         <input v-model.trim="order.city" type="text" placeholder="City" class="form-input">
                         <input v-model.trim="order.zip" type="text" placeholder="Postal Code" class="form-input">
@@ -300,26 +367,31 @@
                             <option disabled value="">State</option>
                             <option v-for="(state, key) in states" :value="state">{{ key }}</option>
                         </select>
+            
+                        <!-- Promotions Checkbox -->
                         <span class="form-span">
-                            <input type="checkbox" v-model="order.promotions" :true-value="order.sendpromotions"
-                                :false-value="order.dontSendpromotions">
+                            <input type="checkbox" v-model="order.promotions" :true-value="order.sendpromotions" :false-value="order.dontSendpromotions">
                             <label for="gift">promotions</label>
                         </span>
+            
+                        <!-- Delivery Method Radio Buttons -->
                         <span class="form-address">
                             <input type="radio" value="Home" v-model="order.method">
                             <label for="home">Home</label>
                             <input type="radio" value="Business" v-model="order.method">
                             <label for="business">Business</label>
                         </span>
-                        <!-- Disable button if form is incomplete -->
+            
+                        <!-- Submit Button -->
                         <button class="btn2" v-if="isFormComplete" :disabled="!isFormComplete" v-on:click="submitForm1">
                             Place Order
                         </button>
                     </div>
-
+            
+                    <!-- Billing Information Overview -->
                     <div id="billing-information">
                         <figure class="receipt-figure">
-                            <img v-bind:src="school.logo" class="receipt-img">
+                            <img v-bind:src="imageLink(school.logo)" class="receipt-img">
                         </figure>
                         <h4>Bill Overview</h4>
                         <hr class="receipt-line">
@@ -657,7 +729,7 @@
                     this.showThankYouPage = false;
                 },
             },
-            
+
             created: function () {
                 fetch('https://futureacademybackend.onrender.com/collection/products', {
                     method: 'GET',
