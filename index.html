@@ -420,6 +420,19 @@
                             <p class="bill-answer">{{ order.method }}</p>
                         </span>
                         <hr class="receipt-line">
+                        <span class="receipt-span">
+                            <p class="bill-label">Product - qty:</p>
+                            <p class="bill-answer">Amount</p>
+                        </span>
+                        <span v-for="item in cartItems" :key="item.id" class="receipt-span">
+                            <p class="bill-label">{{ item.title }} - {{item.orderedQuantity}}</p>
+                            <p class="bill-answer">${{ (item.price * item.orderedQuantity).toFixed(2) }}</p>
+                        </span>
+                        <hr class="receipt-line">
+                        <span class="receipt-span">
+                            <p class="bill-label">Total:</p>
+                            <p class="bill-answer">${{ cartSubtotal.toFixed(2)}}</p>
+                        </span>
                     </div>
                 </section>
             </div>
@@ -764,13 +777,19 @@
                 },
 
                 filteredProducts() {
+                    return this.products.filter(product => {
+                        const query = this.searchQuery.toLowerCase();
+                        // Check if the title, location and price matches the query
+                        const matchesTitle = product.title.toLowerCase().includes(query);
+                        const matchesLocation = product.location.toLowerCase().includes(query);
+                        // const matchesPrice = product.price.toString().includes(query);
+                        // const matchesAvailableInventory = product.availableInventory.toString().includes(query);
                     if (!this.searchQuery) {
                         // If the search query is empty, reset products to the original list
                         return this.originalProducts;
                     }
                     const queryParam = encodeURIComponent(this.searchQuery.trim());
                     const searchUrl = `https://futureacademybackend.onrender.com/search/products?q=${queryParam}`;
-
                     // Fetch search results when there's a search query
                     fetch(searchUrl)
                         .then(response => {
@@ -786,6 +805,8 @@
                             console.error("Error fetching search results:", error);
                         });
 
+                        return matchesTitle || matchesLocation;
+                    });
                     return this.products; // Return the filtered products for display
                 },
 
