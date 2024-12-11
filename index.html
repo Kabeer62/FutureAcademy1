@@ -28,7 +28,7 @@
                     <img v-bind:src="imageLink(school.logo)" alt="logo"
                         style="width: 120px; height: 100px; background-color: none;" />
                 </figure>
-        
+
                 <div class="navigation">
                     <!-- Search Box -->
                     <div id="search-box">
@@ -38,7 +38,7 @@
                         <input type="text" name="search" placeholder="Search Courses" v-model="searchQuery"
                             id="search-area">
                     </div>
-        
+
                     <!-- Navigation Links -->
                     <ul>
                         <!-- Close Menu Button (Mobile) -->
@@ -51,21 +51,22 @@
                         </li>
                         <!-- Displays "Contact" info on hover -->
                         <li>
-                            <a @mouseover="showContact = true" @mouseleave="showContact = false" class="nav-item">Contact</a>
+                            <a @mouseover="showContact = true" @mouseleave="showContact = false"
+                                class="nav-item">Contact</a>
                         </li>
-        
+
                         <!-- Cart/Checkout Button -->
                         <!-- Only shown if `showCartButton` is true -->
                         <button id="checkout_button" v-on:click="showCheckout" v-show="showCartButton">
                             &nbsp;<i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ cartItemCount }}
                         </button>
                     </ul>
-        
+
                     <!-- Menu Button (Mobile) -->
                     <img id="menu-btn" :src="imageLink('images/menu1.jpg')" alt="menu-btn">
                 </div>
             </nav>
-        
+
             <!-- Contact Info Box -->
             <!-- Displays contact information when hovered -->
             <div @mouseover="showContact = true" @mouseleave="showContact = false" id="contact-info"
@@ -73,19 +74,23 @@
                 <h3 class="contact-us">Contact Us</h3>
                 <!-- Contact Details -->
                 <p><strong>Customer Support Hotline:</strong> <a href="tel:+123456789">+971563636822</a></p>
-                <p><strong>Business Hours:</strong><br>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM</p>
+                <p><strong>Business Hours:</strong><br>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00
+                    PM</p>
                 <p><strong>For SMS Support:</strong> <a href="sms:123">"123"</a></p>
                 <p><strong>Email Us:</strong> <a href="mailto:someone@example.com">Kabeerkumar577@gmail.com</a></p>
-        
+
                 <!-- Social Media Links -->
                 <h4>Connect with Us:</h4>
                 <ul style="list-style-type: none; padding: 0;">
-                    <li><a href="https://facebook.com/yourpage" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                    <li><a href="https://twitter.com/yourprofile" target="_blank"><i class="fab fa-instagram"></i></a></li>
-                    <li><a href="https://linkedin.com/company/yourcompany" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                    <li><a href="https://facebook.com/yourpage" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    </li>
+                    <li><a href="https://twitter.com/yourprofile" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </li>
+                    <li><a href="https://linkedin.com/company/yourcompany" target="_blank"><i
+                                class="fab fa-linkedin-in"></i></a></li>
                 </ul>
             </div>
-        
+
             <!-- About Info Box -->
             <!-- Displays "About Us" information when hovered -->
             <div @mouseover="showAbout = true" @mouseleave="showAbout = false" id="about-info" v-show="showAbout"
@@ -97,7 +102,7 @@
                     <img :src="imageLink('images/profile1.jpg')" alt="Profile Picture"
                         @mouseover="showProfileMessage = true" @mouseleave="showProfileMessage = false"
                         id="profile-image" />
-                    
+
                     <!-- About Us Description -->
                     <p>Welcome to Future Academy, a premier destination for top-rated courses that help you grow and
                         excel in various fields. Our mission is to provide high-quality, accessible education that
@@ -115,14 +120,15 @@
         <main>
             <!-- Main section is displayed only if 'showProduct' is true -->
             <section id="main-section" v-if="showProduct">
-            
+
                 <!-- Home Section -->
                 <section id="home" v-if="showHomeContent">
                     <!-- Displayed only if 'showHomeContent' is true -->
                     <h2>Unlock innovation with the power of technology education</h2>
                     <p>
-                        Technology is not just a tool, it’s a gateway to innovation, creativity, and a better future. 
-                        By investing in tech education, we invest in a future where everyone has the potential to contribute 
+                        Technology is not just a tool, it’s a gateway to innovation, creativity, and a better future.
+                        By investing in tech education, we invest in a future where everyone has the potential to
+                        contribute
                         to meaningful change and drive progress.
                     </p>
                     <div class="btn">
@@ -130,7 +136,7 @@
                         <a class="courses" href="#" @click="showCourses">Visit Courses</a>
                     </div>
                 </section>
-            
+
                 <!-- Sort and Filter Section -->
                 <section v-if="showCoursesOnly && sortedFilteredProducts.length > 0" id="sort-toggle-section">
                     <!-- Displayed only if 'showCoursesOnly' is true and there are products to show -->
@@ -162,13 +168,13 @@
                 </section>
 
                 <h1 id="title" v-text="sitename"></h1>
-            
+
                 <!-- Products Section -->
                 <section id="products-section">
                     <!-- Loop through the filtered and sorted product list -->
                     <div v-for="product in sortedFilteredProducts" :key="product.id" class="product-item">
                         <!-- Each product is displayed in its own 'product-item' container -->
-            
+
                         <div v-if="showImageModal" class="modal-overlay" @click="closeImageModal">
                             <!-- Displayed only if 'showImageModal' is true -->
                             <div class="modal-content" @click.stop>
@@ -177,13 +183,13 @@
                                 <img :src="imageLink(currentImage)" alt="Product image" class="modal-image">
                             </div>
                         </div>
-            
+
                         <!-- Product Image -->
                         <figure @click="openImageModal(product.image)">
                             <img :src="imageLink(product.image)" alt="Product image">
                             <!-- Product image fetched dynamically -->
                         </figure>
-            
+
                         <!-- Product Details -->
                         <section id="modules">
                             <h2 class="product-item">{{ product.title }}</h2>
@@ -195,13 +201,14 @@
                             <p class="rating">{{ "★".repeat(product.stars) }} ({{ product.rating }})</p>
                             <p class="price">${{ product.price }}</p>
                             <!-- Product price -->
-                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0" class="add-button">
+                            <button @click="addToCart(product)" :disabled="product.availableInventory === 0"
+                                class="add-button">
                                 <!-- Add to Cart button, disabled if inventory is 0 -->
                                 <i class="fas fa-cart-plus"></i>
                             </button>
                         </section>
                     </div>
-            
+
                     <!-- Message for No Matching Products -->
                     <p v-if="sortedFilteredProducts.length === 0" class="no-match-message">
                         No match found for your search.
@@ -254,7 +261,7 @@
                         <i class="fa-solid fa-arrow-left"></i>Back To Shop
                     </button>
                     <h2 class="title1">Your Cart <i class="fa-solid fa-cart-shopping"></i></h2>
-            
+
                     <!-- Cart Items Loop -->
                     <div>
                         <div v-for="item in cartItems" :key="item.id" class="cart-product">
@@ -266,16 +273,16 @@
                                 <!-- Product Details -->
                                 <h2 class="cart-product-title">{{ item.title }}</h2>
                                 <p class="cart-product-location">{{ item.location }}</p>
-                                
+
                                 <!-- Quantity Controls -->
                                 <div class="cart-product-subsection">
                                     <div class="cart-product-quantity">
                                         <!-- Decrease Quantity Button -->
-                                        <button @click="subtractFromCart(item)" class="quantity-button" 
+                                        <button @click="subtractFromCart(item)" class="quantity-button"
                                             :disabled="item.orderedQuantity === 0">-</button>
                                         <p class="cart-product-count">{{ item.orderedQuantity }}</p>
                                         <!-- Increase Quantity Button -->
-                                        <button @click="addToCart(item)" class="quantity-button" 
+                                        <button @click="addToCart(item)" class="quantity-button"
                                             :disabled="item.availableInventory === 0">+</button>
                                     </div>
                                     <p class="cart-product-rate">${{ item.price }}</p>
@@ -291,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-            
+
                     <!-- Price Overview Section -->
                     <div id="price-overview">
                         <h3 class="title">Subtotal</h3>
@@ -314,7 +321,7 @@
                         </a>
                     </div>
                 </section>
-            
+
                 <!-- Thank You Page: Displays after order is placed -->
                 <section v-if="showThankYouPage" id="thank-you-section">
                     <div class="thank-you-message">
@@ -323,42 +330,43 @@
                         <button class="btn-home" @click="goToHome">Back to Home</button>
                     </div>
                 </section>
-            
+
                 <!-- Checkout Form Section -->
                 <section v-if="!showThankYouPage && showForm" id="checkout-section">
                     <div id="checkout-form">
                         <h3 class="title">Checkout Form <i class="fa-solid fa-bag-shopping"></i></h3>
                         <h4>Billing Address</h4>
-                        
+
                         <!-- Input Fields with Validation -->
                         <!-- First Name -->
-                        <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text" placeholder="First Name"
-                            :class="{'invalid-input': order.firstName && !isFirstNameValid}" class="form-input">
+                        <input v-model.trim="order.firstName" :key="shakeKeyFirstName" type="text"
+                            placeholder="First Name" :class="{'invalid-input': order.firstName && !isFirstNameValid}"
+                            class="form-input">
                         <p v-if="order.firstName && !isFirstNameValid" class="error">
                             First name must contain only letters.
                         </p>
-            
+
                         <!-- Last Name -->
                         <input v-model.trim="order.lastName" :key="shakeKeyLastName" type="text" placeholder="Last Name"
                             :class="{'invalid-input': order.lastName && !isLastNameValid}" class="form-input">
                         <p v-if="order.lastName && !isLastNameValid" class="error">
                             Last name must contain only letters.
                         </p>
-            
+
                         <!-- Email -->
                         <input v-model.trim="order.email" :key="shakeKeyEmail" type="email" placeholder="Email Address"
                             :class="{'invalid-input': order.email && !isEmailValid}" class="form-input">
                         <p v-if="order.email && !isEmailValid" class="error">
                             Please enter a valid email address.
                         </p>
-            
+
                         <!-- Phone Number -->
                         <input v-model.trim="order.phone" :key="shakeKey" type="text" placeholder="Phone Number"
                             :class="{'invalid-input': order.phone && !isPhoneValid}" class="form-input">
                         <p v-if="order.phone && !isPhoneValid" class="error">
                             Phone number must contain only numbers.
                         </p>
-            
+
                         <!-- Other Form Fields -->
                         <input v-model.trim="order.address" type="text" placeholder="Address" class="form-input">
                         <input v-model.trim="order.city" type="text" placeholder="City" class="form-input">
@@ -367,13 +375,14 @@
                             <option disabled value="">State</option>
                             <option v-for="(state, key) in states" :value="state">{{ key }}</option>
                         </select>
-            
+
                         <!-- Promotions Checkbox -->
                         <span class="form-span">
-                            <input type="checkbox" v-model="order.promotions" :true-value="order.sendpromotions" :false-value="order.dontSendpromotions">
+                            <input type="checkbox" v-model="order.promotions" :true-value="order.sendpromotions"
+                                :false-value="order.dontSendpromotions">
                             <label for="gift">promotions</label>
                         </span>
-            
+
                         <!-- Delivery Method Radio Buttons -->
                         <span class="form-address">
                             <input type="radio" value="Home" v-model="order.method">
@@ -381,13 +390,13 @@
                             <input type="radio" value="Business" v-model="order.method">
                             <label for="business">Business</label>
                         </span>
-            
+
                         <!-- Submit Button -->
                         <button class="btn2" v-if="isFormComplete" :disabled="!isFormComplete" v-on:click="submitForm1">
                             Place Order
                         </button>
                     </div>
-            
+
                     <!-- Billing Information Overview -->
                     <div id="billing-information">
                         <figure class="receipt-figure">
@@ -605,18 +614,20 @@
                 },
 
                 addToCart: function (product) {
+                    // Check if the product is in stock
                     if (product.availableInventory > 0) {
+                        // Find if the product already exists in the cart
                         let cartProduct = this.cart.find(item => item._id === product._id);
 
                         if (cartProduct) {
                             cartProduct.orderedQuantity++; // Update cart quantity
                         } else {
-                            // Push the actual reference of the product, not a shallow copy
+                            // Push the actual product reference into the cart
                             this.cart.push(product);
                             product.orderedQuantity = 1; // Initialize in the product
                         }
 
-                        product.availableInventory--; // Decrement inventory in the original product reference
+                        product.availableInventory--; // Decrease the available inventory of the product
                         this.showCartButton = true;
                     } else {
                         alert("Product is out of stock!");
@@ -777,33 +788,34 @@
                 },
 
                 filteredProducts() {
-                    return this.products.filter(product => {
+                    return this.products.filter(product => { //Filters the products array in the frontend.
                         const query = this.searchQuery.toLowerCase();
-                        // Check if the title, location and price matches the query
+                        // Check if the title, location matches the query
                         const matchesTitle = product.title.toLowerCase().includes(query);
                         const matchesLocation = product.location.toLowerCase().includes(query);
                         // const matchesPrice = product.price.toString().includes(query);
                         // const matchesAvailableInventory = product.availableInventory.toString().includes(query);
-                    if (!this.searchQuery) {
-                        // If the search query is empty, reset products to the original list
-                        return this.originalProducts;
-                    }
-                    const queryParam = encodeURIComponent(this.searchQuery.trim());
-                    const searchUrl = `https://futureacademybackend.onrender.com/search/products?q=${queryParam}`;
-                    // Fetch search results when there's a search query
-                    fetch(searchUrl)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error("Failed to fetch search results");
-                            }
-                            return response.json();
-                        })
-                        .then(results => {
-                            this.products = results; // Update products with the search results
-                        })
-                        .catch(error => {
-                            console.error("Error fetching search results:", error);
-                        });
+                        if (!this.searchQuery) {
+                            // If the search query is empty, reset products to the original list
+                            return this.originalProducts;
+                        }
+                        // Encodes the search query to make it URL-safe.
+                        const queryParam = encodeURIComponent(this.searchQuery.trim());
+                        const searchUrl = `https://futureacademybackend.onrender.com/search/products?q=${queryParam}`;
+                        // Sends a GET request to the backend
+                        fetch(searchUrl)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error("Failed to fetch search results");
+                                }
+                                return response.json();
+                            })
+                            .then(results => {
+                                this.products = results; // Update products with the search results
+                            })
+                            .catch(error => {
+                                console.error("Error fetching search results:", error);
+                            });
 
                         return matchesTitle || matchesLocation;
                     });
